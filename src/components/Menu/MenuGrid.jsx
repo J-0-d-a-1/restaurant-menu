@@ -1,20 +1,10 @@
+import MenuItemCard from "./MenuItemCard";
+
 export default function MenuGrid({ items }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {items.map((item) => (
-        <div
-          key={item.name}
-          className="bg-white shadow rounded-lg p-4 relative"
-        >
-          <img
-            src={item.image}
-            alt={item.name}
-            className="w-full h-40 object-cover rounded-md mb-3"
-          />
-          <h3 className="text-lg font-semibold">{item.name}</h3>
-          <p className="text-gray-600 text-sm mb-1">{item.description}</p>
-          <p className="font-bold">{item.price}</p>
-        </div>
+        <MenuItemCard item={item} />
       ))}
     </div>
   );
