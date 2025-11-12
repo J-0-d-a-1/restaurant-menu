@@ -4,8 +4,15 @@ export default function MenuItemModal({ item, onClose }) {
   if (!item) return null;
 
   return (
-    <div className="fixed inset-9 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div className="bg-white rounded-xl w-full max-w-md p-6 relative overflow-auto">
+    <div
+      className="fixed inset-9 z-50 flex items-center justify-center bg-black bg-opacity-60 p-4"
+      onClick={onClose}
+    >
+      {/* Modal content: stop click from bubbling to overlay */}
+      <div
+        className="bg-white rounded-xl w-full max-w-md p-6 relative overflow-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Close Button */}
         <button
           className="absolute top-1 right-3 text-gray-500 hover:text-gray-800 font-bold"
