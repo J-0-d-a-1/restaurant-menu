@@ -2,7 +2,7 @@ import { menu } from "../data/menuData";
 
 import CategoryTabs from "../components/Menu/CategoryTabs";
 import SubCategoryTabs from "../components/Menu/SubCategoryTabs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function MenuPage() {
   const fixedCategories = [
@@ -13,7 +13,24 @@ export default function MenuPage() {
     "Rice & Noodles",
     "Desserts",
   ];
-  const [selectedCategory, setSelectedCategory] = useState("Drinks");
+  const [selectedCategory, setSelectedCategory] = useState(fixedCategories[0]);
+  const [subCategories, setSubCategories] = useState([]);
+  const [selectedSubCategory, setSelectedSubCategpry] = useState("");
+
+  // update subcategories when category changes
+  useEffect(() => {
+    const subs = [
+      ...new Set(
+        menu
+          .filter((item) => item.category === selectedCategory)
+          .map((item) => item.subcategory)
+          .filter(Boolean)
+      ),
+    ];
+
+    setSubCategories(subs);
+    setSelectedSubCategpry(subs[0] || "");
+  }, [selectedCategory]);
 
   return (
     <div className="p-4 sm:p-6 min-h-screen">
@@ -27,7 +44,11 @@ export default function MenuPage() {
       />
 
       {/* Subcategory tabs */}
-      <SubCategoryTabs />
+      <SubCategoryTabs
+        subCategories={subCategories}
+        selected={selectedSubCategory}
+        onSelect={setSelectedSubCategpry}
+      />
     </div>
   );
 }

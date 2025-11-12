@@ -31,7 +31,7 @@ export const menu = [
   },
   {
     id: 4,
-    category: "Sald",
+    category: "Salad",
     subcategory: "Large",
     name: "SHASIMI SALAD",
     description:
@@ -42,7 +42,7 @@ export const menu = [
   },
   {
     id: 5,
-    category: "Sald",
+    category: "Salad",
     subcategory: "Small",
     name: "SHASIMI SALAD",
     description:
@@ -53,17 +53,6 @@ export const menu = [
   },
   {
     id: 6,
-    category: "Sald",
-    subcategory: "Small",
-    name: "SHASIMI SALAD",
-    description:
-      "Mixed sashimi with a cirtus soy dressing on a bed of organic greenss",
-    price: 23,
-    image_url: "/images/sashimi-salad-large.jpg",
-    soldOut: false,
-  },
-  {
-    id: 7,
     category: "Dessert",
     subcategory: "",
     name: "ALMOND PUDDING",
@@ -73,7 +62,7 @@ export const menu = [
     soldOut: false,
   },
   {
-    id: 8,
+    id: 7,
     category: "Dessert",
     subcategory: "",
     name: "TAIYAKI",
@@ -84,7 +73,7 @@ export const menu = [
     soldOut: false,
   },
   {
-    id: 9,
+    id: 8,
     category: "Drinks",
     subcategory: "Cactails",
     name: "SEXY SAMURAI",
@@ -95,7 +84,7 @@ export const menu = [
     soldOut: true,
   },
   {
-    id: 10,
+    id: 9,
     category: "Drinks",
     subcategory: "Tap Beer",
     name: "SAPPORO",
