@@ -12,6 +12,7 @@ export const menu = [
       "/images/hapa-logo.png",
     ],
     soldOut: false,
+    hide: false,
   },
   {
     id: 2,
@@ -26,6 +27,7 @@ export const menu = [
       "/images/hapa-logo.png",
     ],
     soldOut: false,
+    hide: false,
   },
   {
     id: 3,
@@ -40,6 +42,7 @@ export const menu = [
       "/images/hapa-logo.png",
     ],
     soldOut: false,
+    hide: false,
   },
   {
     id: 4,
@@ -55,6 +58,7 @@ export const menu = [
       "/images/hapa-logo.png",
     ],
     soldOut: false,
+    hide: false,
   },
   {
     id: 5,
@@ -70,6 +74,7 @@ export const menu = [
       "/images/hapa-logo.png",
     ],
     soldOut: false,
+    hide: false,
   },
   {
     id: 6,
@@ -84,6 +89,7 @@ export const menu = [
       "/images/hapa-logo.png",
     ],
     soldOut: false,
+    hide: false,
   },
   {
     id: 7,
@@ -99,6 +105,7 @@ export const menu = [
       "/images/hapa-logo.png",
     ],
     soldOut: false,
+    hide: false,
   },
   {
     id: 8,
@@ -114,6 +121,7 @@ export const menu = [
       "/images/hapa-logo.png",
     ],
     soldOut: true,
+    hide: false,
   },
   {
     id: 9,
@@ -128,5 +136,6 @@ export const menu = [
       "/images/hapa-logo.png",
     ],
     soldOut: false,
+    hide: false,
   },
 ];
