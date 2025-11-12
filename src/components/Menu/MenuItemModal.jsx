@@ -1,3 +1,5 @@
+import SoldOutBadge from "./SoldOutBadge";
+
 const item = {
   id: 1,
   category: "Sashimi & Sushi",
@@ -14,7 +16,9 @@ const item = {
   hide: false,
 };
 
-export default function MenuItemModal() {
+export default function MenuItemModal({ item, onClose }) {
+  if (!item) return null;
+
   return (
     <div className="fixed inset-9 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
       <div className="bg-white rounded-xl w-full max-w-md p-6 relative overflow-auto">
@@ -22,6 +26,9 @@ export default function MenuItemModal() {
         <button className="absolute top-1 right-3 text-gray-500 hover:text-gray-800 font-bold">
           x
         </button>
+
+        {/* Sold Out Badge */}
+        {item.soldOut && <SoldOutBadge />}
 
         {/* Image gallery */}
         <div className="flex space-x-2 overflow-x-auto mb-4">
