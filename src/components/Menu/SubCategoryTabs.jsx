@@ -1,8 +1,4 @@
-import { menu } from "../../data/menuData";
-
-const subCategories = menu.map((item) => item.subcategory);
-
-export default function SubCategoryTabs() {
+export default function SubCategoryTabs({ subCategories, selected, onSelect }) {
   return (
     <div className="flex gap-2 overflow-x-auto py-2 mb-4">
       {subCategories.map((subCategory) => (
