@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import CategoryTabs from "../components/Menu/CategoryTabs";
 import SubCategoryTabs from "../components/Menu/SubCategoryTabs";
 import MenuGrid from "../components/Menu/MenuGrid";
+import MenuItemModal from "../components/Menu/MenuItemModal";
 
 export default function MenuPage() {
   const fixedCategories = [
@@ -19,6 +20,7 @@ export default function MenuPage() {
   const [selectedCategory, setSelectedCategory] = useState(fixedCategories[0]);
   const [subCategories, setSubCategories] = useState([]);
   const [selectedSubCategory, setSelectedSubCategpry] = useState("");
+  const [selectedItem, setSelectedItem] = useState(null);
 
   // update subcategories when category changes
   useEffect(() => {
@@ -59,7 +61,13 @@ export default function MenuPage() {
       />
 
       {/* Menu grids */}
-      <MenuGrid items={filteredMenu} />
+      <MenuGrid items={filteredMenu} onItemClick={setSelectedItem} />
+
+      {/* Menu modals */}
+      <MenuItemModal
+        item={selectedItem}
+        onClose={() => setSelectedItem(null)}
+      />
     </div>
   );
 }
