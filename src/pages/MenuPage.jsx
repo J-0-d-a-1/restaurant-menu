@@ -61,7 +61,7 @@ export default function MenuPage() {
       />
 
       {/* Menu grids */}
-      <MenuGrid items={filteredMenu} />
+      <MenuGrid items={filteredMenu} onItemClick={setSelectedItem} />
 
       {/* Menu modals */}
       <MenuItemModal

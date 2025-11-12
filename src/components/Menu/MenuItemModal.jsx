@@ -1,21 +1,5 @@
 import SoldOutBadge from "./SoldOutBadge";
 
-const item = {
-  id: 1,
-  category: "Sashimi & Sushi",
-  subCategory: "Sashimi",
-  name: "SASHIMORI (2 pieces each)",
-  description: "7 kinds of fresh sashimi",
-  price: 46,
-  images: [
-    "/images/sashimori.jpeg",
-    "/images/hapa-logo.png",
-    "/images/hapa-logo.png",
-  ],
-  soldOut: false,
-  hide: false,
-};
-
 export default function MenuItemModal({ item, onClose }) {
   if (!item) return null;
 
@@ -23,7 +7,10 @@ export default function MenuItemModal({ item, onClose }) {
     <div className="fixed inset-9 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
       <div className="bg-white rounded-xl w-full max-w-md p-6 relative overflow-auto">
         {/* Close Button */}
-        <button className="absolute top-1 right-3 text-gray-500 hover:text-gray-800 font-bold">
+        <button
+          className="absolute top-1 right-3 text-gray-500 hover:text-gray-800 font-bold"
+          onClick={onClose}
+        >
           x
         </button>
 
