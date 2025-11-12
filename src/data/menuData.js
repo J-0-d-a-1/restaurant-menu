@@ -2,7 +2,7 @@ export const menu = [
   {
     id: 1,
     category: "Sashimi & Sushi",
-    subcategory: "Sashimi",
+    subCategory: "Sashimi",
     name: "SASHIMORI (2 pieces each)",
     description: "7 kinds of fresh sashimi",
     price: 46,
@@ -12,7 +12,7 @@ export const menu = [
   {
     id: 2,
     category: "Sashimi & Sushi",
-    subcategory: "Sushi",
+    subCategory: "Sushi",
     name: "SMOKY SALMON OSHIZUSHI",
     description: "Torched aburi pressed sushi",
     price: 19,
@@ -22,7 +22,7 @@ export const menu = [
   {
     id: 3,
     category: "Tapas",
-    subcategory: "Cold",
+    subCategory: "Cold",
     name: "Beef Tataki",
     description: "Lightly seared AAA beef, sesame chili sauce",
     price: 15,
@@ -32,7 +32,7 @@ export const menu = [
   {
     id: 4,
     category: "Salad",
-    subcategory: "Large",
+    subCategory: "Large",
     name: "SHASIMI SALAD",
     description:
       "Mixed sashimi with a cirtus soy dressing on a bed of organic greenss",
@@ -43,7 +43,7 @@ export const menu = [
   {
     id: 5,
     category: "Salad",
-    subcategory: "Small",
+    subCategory: "Small",
     name: "SHASIMI SALAD",
     description:
       "Mixed sashimi with a cirtus soy dressing on a bed of organic greenss",
@@ -54,7 +54,7 @@ export const menu = [
   {
     id: 6,
     category: "Dessert",
-    subcategory: "",
+    subCategory: "",
     name: "ALMOND PUDDING",
     description: "Almond, coconut and milk pudding",
     price: 10,
@@ -64,7 +64,7 @@ export const menu = [
   {
     id: 7,
     category: "Dessert",
-    subcategory: "",
+    subCategory: "",
     name: "TAIYAKI",
     description:
       "Sweet battered pastry stuffed with red bean paste, served with ice cream",
@@ -75,7 +75,7 @@ export const menu = [
   {
     id: 8,
     category: "Drinks",
-    subcategory: "Cactails",
+    subCategory: "Cactails",
     name: "SEXY SAMURAI",
     description:
       "Casamigos Mezcal, Aperol, lychee liqueur, yuzu, strawberry syrup",
@@ -86,7 +86,7 @@ export const menu = [
   {
     id: 9,
     category: "Drinks",
-    subcategory: "Tap Beer",
+    subCategory: "Tap Beer",
     name: "SAPPORO",
     description: "",
     price: 7.5,

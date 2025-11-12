@@ -1,8 +1,10 @@
 import { menu } from "../data/menuData";
 
+import { useEffect, useState } from "react";
+
 import CategoryTabs from "../components/Menu/CategoryTabs";
 import SubCategoryTabs from "../components/Menu/SubCategoryTabs";
-import { useEffect, useState } from "react";
+import MenuGrid from "../components/Menu/MenuGrid";
 
 export default function MenuPage() {
   const fixedCategories = [
@@ -23,7 +25,7 @@ export default function MenuPage() {
       ...new Set(
         menu
           .filter((item) => item.category === selectedCategory)
-          .map((item) => item.subcategory)
+          .map((item) => item.subCategory)
           .filter(Boolean)
       ),
     ];
@@ -31,6 +33,12 @@ export default function MenuPage() {
     setSubCategories(subs);
     setSelectedSubCategpry(subs[0] || "");
   }, [selectedCategory]);
+
+  // Filter menu items
+  const filteredMenu = menu.filter((item) => {
+    item.category === selectedCategory &&
+      (selectedSubCategory ? item.subCategory === selectedSubCategory : true);
+  });
 
   return (
     <div className="p-4 sm:p-6 min-h-screen">
@@ -49,6 +57,9 @@ export default function MenuPage() {
         selected={selectedSubCategory}
         onSelect={setSelectedSubCategpry}
       />
+
+      {/* Menu grids */}
+      <MenuGrid items={filteredMenu} />
     </div>
   );
 }
