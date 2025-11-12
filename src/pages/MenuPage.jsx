@@ -1,8 +1,10 @@
 import { menu } from "../data/menuData";
 
+import { useEffect, useState } from "react";
+
 import CategoryTabs from "../components/Menu/CategoryTabs";
 import SubCategoryTabs from "../components/Menu/SubCategoryTabs";
-import { useEffect, useState } from "react";
+import MenuGrid from "../components/Menu/MenuGrid";
 
 export default function MenuPage() {
   const fixedCategories = [
@@ -13,24 +15,30 @@ export default function MenuPage() {
     "Rice & Noodles",
     "Desserts",
   ];
+
   const [selectedCategory, setSelectedCategory] = useState(fixedCategories[0]);
   const [subCategories, setSubCategories] = useState([]);
   const [selectedSubCategory, setSelectedSubCategpry] = useState("");
 
   // update subcategories when category changes
   useEffect(() => {
+    const filtered = menu.filter((item) => item.category === selectedCategory);
     const subs = [
-      ...new Set(
-        menu
-          .filter((item) => item.category === selectedCategory)
-          .map((item) => item.subcategory)
-          .filter(Boolean)
-      ),
+      ...new Set(filtered.map((item) => item.subCategory).filter(Boolean)),
     ];
 
     setSubCategories(subs);
     setSelectedSubCategpry(subs[0] || "");
   }, [selectedCategory]);
+
+  // Filter menu items
+  const filteredMenu = menu.filter((item) => {
+    const matchCategory = item.category === selectedCategory;
+    const matchSubCategory = item.subCategory
+      ? item.subCategory === selectedSubCategory
+      : true;
+    return matchCategory && matchSubCategory;
+  });
 
   return (
     <div className="p-4 sm:p-6 min-h-screen">
@@ -49,6 +57,9 @@ export default function MenuPage() {
         selected={selectedSubCategory}
         onSelect={setSelectedSubCategpry}
       />
+
+      {/* Menu grids */}
+      <MenuGrid items={filteredMenu} />
     </div>
   );
 }
