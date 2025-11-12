@@ -15,19 +15,16 @@ export default function MenuPage() {
     "Rice & Noodles",
     "Desserts",
   ];
+
   const [selectedCategory, setSelectedCategory] = useState(fixedCategories[0]);
   const [subCategories, setSubCategories] = useState([]);
   const [selectedSubCategory, setSelectedSubCategpry] = useState("");
 
   // update subcategories when category changes
   useEffect(() => {
+    const filtered = menu.filter((item) => item.category === selectedCategory);
     const subs = [
-      ...new Set(
-        menu
-          .filter((item) => item.category === selectedCategory)
-          .map((item) => item.subCategory)
-          .filter(Boolean)
-      ),
+      ...new Set(filtered.map((item) => item.subCategory).filter(Boolean)),
     ];
 
     setSubCategories(subs);
