@@ -6,7 +6,11 @@ export const menu = [
     name: "SASHIMORI (2 pieces each)",
     description: "7 kinds of fresh sashimi",
     price: 46,
-    image: "/images/sashimori.jpeg",
+    images: [
+      "/images/sashimori.jpeg",
+      "/images/hapa-logo.png",
+      "/images/hapa-logo.png",
+    ],
     soldOut: false,
   },
   {
@@ -16,7 +20,11 @@ export const menu = [
     name: "SMOKY SALMON OSHIZUSHI",
     description: "Torched aburi pressed sushi",
     price: 19,
-    image: "/images/oshizushi.avif",
+    images: [
+      "/images/oshizushi.avif",
+      "/images/hapa-logo.png",
+      "/images/hapa-logo.png",
+    ],
     soldOut: false,
   },
   {
@@ -26,7 +34,11 @@ export const menu = [
     name: "Beef Tataki",
     description: "Lightly seared AAA beef, sesame chili sauce",
     price: 15,
-    image: "/images/beeftataki.avif",
+    images: [
+      "/images/beeftataki.avif",
+      "/images/hapa-logo.png",
+      "/images/hapa-logo.png",
+    ],
     soldOut: false,
   },
   {
@@ -37,7 +49,11 @@ export const menu = [
     description:
       "Mixed sashimi with a cirtus soy dressing on a bed of organic greenss",
     price: 30,
-    image: "/images/sashimi-salad-large.jpg",
+    images: [
+      "/images/sashimi-salad-large.jpg",
+      "/images/hapa-logo.png",
+      "/images/hapa-logo.png",
+    ],
     soldOut: false,
   },
   {
@@ -48,7 +64,11 @@ export const menu = [
     description:
       "Mixed sashimi with a cirtus soy dressing on a bed of organic greenss",
     price: 23,
-    image: "/images/sashimi-salad-large.jpg",
+    images: [
+      "/images/sashimi-salad-large.jpg",
+      "/images/hapa-logo.png",
+      "/images/hapa-logo.png",
+    ],
     soldOut: false,
   },
   {
@@ -58,7 +78,11 @@ export const menu = [
     name: "ALMOND PUDDING",
     description: "Almond, coconut and milk pudding",
     price: 10,
-    image: "/images/almond-pudding.jpg",
+    images: [
+      "/images/almond-pudding.jpg",
+      "/images/hapa-logo.png",
+      "/images/hapa-logo.png",
+    ],
     soldOut: false,
   },
   {
@@ -69,7 +93,11 @@ export const menu = [
     description:
       "Sweet battered pastry stuffed with red bean paste, served with ice cream",
     price: 10,
-    image: "/images/almond-pudding.jpg",
+    images: [
+      "/images/almond-pudding.jpg",
+      "/images/hapa-logo.png",
+      "/images/hapa-logo.png",
+    ],
     soldOut: false,
   },
   {
@@ -80,7 +108,11 @@ export const menu = [
     description:
       "Casamigos Mezcal, Aperol, lychee liqueur, yuzu, strawberry syrup",
     price: 21,
-    image: "/images/sexy-samurai.jpeg",
+    images: [
+      "/images/sexy-samurai.jpeg",
+      "/images/hapa-logo.png",
+      "/images/hapa-logo.png",
+    ],
     soldOut: true,
   },
   {
@@ -90,7 +122,11 @@ export const menu = [
     name: "SAPPORO",
     description: "",
     price: 7.5,
-    image: "/images/sapporo.jpg",
+    images: [
+      "/images/sapporo.jpg",
+      "/images/hapa-logo.png",
+      "/images/hapa-logo.png",
+    ],
     soldOut: false,
   },
 ];
