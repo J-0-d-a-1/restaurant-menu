@@ -1,6 +1,9 @@
+import SoldOutBadge from "./SoldOutBadge";
+
 export default function MenuItemCard({ item }) {
   return (
     <div key={item.name} className="bg-white shadow rounded-lg p-4 relative">
+      {item.soldOut && <SoldOutBadge />}
       <img
         src={item.image}
         alt={item.name}
