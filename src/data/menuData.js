@@ -6,7 +6,7 @@ export const menu = [
     name: "SASHIMORI (2 pieces each)",
     description: "7 kinds of fresh sashimi",
     price: 46,
-    image_url: "/images/sashimori.jpeg",
+    image: "/images/sashimori.jpeg",
     soldOut: false,
   },
   {
@@ -16,7 +16,7 @@ export const menu = [
     name: "SMOKY SALMON OSHIZUSHI",
     description: "Torched aburi pressed sushi",
     price: 19,
-    image_url: "/images/oshizushi.avif",
+    image: "/images/oshizushi.avif",
     soldOut: false,
   },
   {
@@ -26,7 +26,7 @@ export const menu = [
     name: "Beef Tataki",
     description: "Lightly seared AAA beef, sesame chili sauce",
     price: 15,
-    image_url: "/images/beeftataki.avif",
+    image: "/images/beeftataki.avif",
     soldOut: false,
   },
   {
@@ -37,7 +37,7 @@ export const menu = [
     description:
       "Mixed sashimi with a cirtus soy dressing on a bed of organic greenss",
     price: 30,
-    image_url: "/images/sashimi-salad-large.jpg",
+    image: "/images/sashimi-salad-large.jpg",
     soldOut: false,
   },
   {
@@ -48,7 +48,7 @@ export const menu = [
     description:
       "Mixed sashimi with a cirtus soy dressing on a bed of organic greenss",
     price: 23,
-    image_url: "/images/sashimi-salad-large.jpg",
+    image: "/images/sashimi-salad-large.jpg",
     soldOut: false,
   },
   {
@@ -58,7 +58,7 @@ export const menu = [
     name: "ALMOND PUDDING",
     description: "Almond, coconut and milk pudding",
     price: 10,
-    image_url: "/images/almond-pudding.jpg",
+    image: "/images/almond-pudding.jpg",
     soldOut: false,
   },
   {
@@ -69,7 +69,7 @@ export const menu = [
     description:
       "Sweet battered pastry stuffed with red bean paste, served with ice cream",
     price: 10,
-    image_url: "/images/almond-pudding.jpg",
+    image: "/images/almond-pudding.jpg",
     soldOut: false,
   },
   {

@@ -33,8 +33,11 @@ export default function MenuPage() {
 
   // Filter menu items
   const filteredMenu = menu.filter((item) => {
-    item.category === selectedCategory &&
-      (selectedSubCategory ? item.subCategory === selectedSubCategory : true);
+    const matchCategory = item.category === selectedCategory;
+    const matchSubCategory = item.subCategory
+      ? item.subCategory === selectedSubCategory
+      : true;
+    return matchCategory && matchSubCategory;
   });
 
   return (

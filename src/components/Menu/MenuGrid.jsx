@@ -2,7 +2,10 @@ export default function MenuGrid({ items }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {items.map((item) => (
-        <div className="bg-white shadow rounded-lg p-4 relative">
+        <div
+          key={item.name}
+          className="bg-white shadow rounded-lg p-4 relative"
+        >
           <img
             src={item.image}
             alt={item.name}
