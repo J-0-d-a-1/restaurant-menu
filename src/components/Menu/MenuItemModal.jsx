@@ -44,25 +44,39 @@ export default function MenuItemModal({ item, onClose }) {
             alt={`${item.name} ${currentIndex + 1}`}
             className="w-full h-64 sm:h-72 object-cover rounded-md"
           />
-        </div>
 
-        {/* Prev/Next buttons */}
-        {hasMultiple && (
-          <>
-            <button
-              onClick={prevImage}
-              className="absolute top-1/3 left-2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-op50"
-            >
-              ‹
-            </button>
-            <button
-              onClick={nextImage}
-              className="absolute top-1/3 right-2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-op50"
-            >
-              ›
-            </button>
-          </>
-        )}
+          {/* Prev/Next buttons */}
+          {hasMultiple && (
+            <>
+              <button
+                onClick={prevImage}
+                className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-op50"
+              >
+                ‹
+              </button>
+              <button
+                onClick={nextImage}
+                className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-op50"
+              >
+                ›
+              </button>
+            </>
+          )}
+
+          {/* Dots navigation */}
+          {hasMultiple && (
+            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1">
+              {item.images.map((_, idx) => (
+                <span
+                  key={idx}
+                  className={`w-2 h-2 rounded-full ${
+                    idx === currentIndex ? "bg-white" : "bg-gray-300"
+                  }`}
+                ></span>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Details */}
         <h2 className="text-xl font-bold mb-2">{item.name}</h2>
