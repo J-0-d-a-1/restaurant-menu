@@ -1,7 +1,20 @@
+import { useState } from "react";
 import SoldOutBadge from "./SoldOutBadge";
 
 export default function MenuItemModal({ item, onClose }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   if (!item) return null;
+
+  const hasMultiple = item.images.length > 1;
+
+  const prevImage = () => {
+    setCurrentIndex((prev) => (prev === 0 ? item.images.length - 1 : prev - 1));
+  };
+
+  const nextImage = () => {
+    setCurrentIndex((prev) => (prev === item.images.length - 1 ? 0 : prev + 1));
+  };
 
   return (
     <div
@@ -24,17 +37,32 @@ export default function MenuItemModal({ item, onClose }) {
         {/* Sold Out Badge */}
         {item.soldOut && <SoldOutBadge />}
 
-        {/* Image gallery */}
-        <div className="flex space-x-2 overflow-x-auto mb-4">
-          {item.images.map((img, idx) => (
-            <img
-              key={idx}
-              src={img}
-              alt={`${item.name} ${idx + 1}`}
-              className="w-50 h-50 object-cover rounded-md flex-shrink-0"
-            />
-          ))}
+        {/* Image Slider */}
+        <div className="relative mb-4">
+          <img
+            src={item.images[currentIndex]}
+            alt={`${item.name} ${currentIndex + 1}`}
+            className="w-full h-64 sm:h-72 object-cover rounded-md"
+          />
         </div>
+
+        {/* Prev/Next buttons */}
+        {hasMultiple && (
+          <>
+            <button
+              onClick={prevImage}
+              className="absolute top-1/3 left-2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-op50"
+            >
+              ‹
+            </button>
+            <button
+              onClick={nextImage}
+              className="absolute top-1/3 right-2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-op50"
+            >
+              ›
+            </button>
+          </>
+        )}
 
         {/* Details */}
         <h2 className="text-xl font-bold mb-2">{item.name}</h2>
