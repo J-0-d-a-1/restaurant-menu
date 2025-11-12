@@ -31,7 +31,7 @@ export const menu = [
   },
   {
     id: 4,
-    category: "Sald",
+    category: "Salad",
     subcategory: "Large",
     name: "SHASIMI SALAD",
     description:
@@ -42,7 +42,7 @@ export const menu = [
   },
   {
     id: 5,
-    category: "Sald",
+    category: "Salad",
     subcategory: "Small",
     name: "SHASIMI SALAD",
     description:
