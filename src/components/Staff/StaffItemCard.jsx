@@ -1,4 +1,4 @@
-export default function StaffItemCard({ item }) {
+export default function StaffItemCard({ item, onEdit, onDelete }) {
   return (
     <div className="bg-white rounded-lg p-4 shadow-sm border">
       <img
@@ -16,10 +16,16 @@ export default function StaffItemCard({ item }) {
       <p className="mt-2 font-semibold">${item.price}</p>
 
       <div className="flex gap-2 mt-4">
-        <button className="flex-1 bg-green-600 text-white py-1 rounded ">
+        <button
+          className="flex-1 bg-green-600 text-white py-1 rounded"
+          onClick={onEdit}
+        >
           Edit
         </button>
-        <button className="flex-1 bg-red-600 text-white py-1 rounded">
+        <button
+          className="flex-1 bg-red-600 text-white py-1 rounded"
+          onClick={onDelete}
+        >
           Delete
         </button>
       </div>

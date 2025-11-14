@@ -14,7 +14,7 @@ export default function MenuPage() {
     "Sashimi & Sushi",
     "Tapas",
     "Rice & Noodles",
-    "Desserts",
+    "Dessert",
   ];
 
   const [selectedCategory, setSelectedCategory] = useState(fixedCategories[0]);
