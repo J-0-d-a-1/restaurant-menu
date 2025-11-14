@@ -1,9 +1,49 @@
 import { useState } from "react";
 
 import { menu } from "../data/menuData";
+import StaffItemCard from "../components/Staff/StaffItemCard";
+import CategoryTabs from "../components/Menu/CategoryTabs";
 
 export default function StaffPage() {
+  const fixedCategories = [
+    "Drinks",
+    "Salad",
+    "Sashimi & Sushi",
+    "Tapas",
+    "Rice & Noodles",
+    "Dessert",
+  ];
+
   const [items, setItems] = useState(menu);
+  const [editingItem, setEditingItem] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(fixedCategories[0]);
+
+  // Filter menu items
+  const filteredMenu = items.filter((item) => {
+    const matchCategory = item.category === selectedCategory;
+    return matchCategory;
+  });
+
+  const handleSave = (newItem) => {
+    if (editingItem) {
+      // update existing
+      setItems((prev) =>
+        prev.map((item) => {
+          item.id === editingItem.id ? { ...newItem, id: item.id } : item;
+        })
+      );
+    }
+
+    setEditingItem(null);
+  };
+
+  const handleDelete = (id) => {
+    const userConfirmed = window.confirm(
+      "Are you sure you want to delete this item?"
+    );
+    if (userConfirmed)
+      setItems((prev) => prev.filter((item) => item.id !== id));
+  };
 
   return (
     <div className="min-h-screen p-2 bg-gray-100">
@@ -14,6 +54,13 @@ export default function StaffPage() {
         + Add New Menu
       </button>
 
+      {/* Category tabs */}
+      <CategoryTabs
+        categories={fixedCategories}
+        selected={selectedCategory}
+        onSelect={setSelectedCategory}
+      />
+
       {/* Form modal */}
       {/* <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
         <div className="bg-white w-full max-w-md rounded-xl p-4">
@@ -23,31 +70,13 @@ export default function StaffPage() {
 
       {/* Menu Items List */}
       <div className="grid gap-4 sm:grid-cols-3">
-        {items.map((item) => (
-          <div className="bg-white rounded-lg p-4 shadow-sm border">
-            <img
-              src={item.images[0]}
-              alt={item.name}
-              className="w-full h-40 object-cover rounded-md mb-3"
-            />
-            <h2 className="font-bold text-lg">{item.name}</h2>
-            <p className="text-sm text-gray-600">{item.category}</p>
-
-            {item.subCategory && (
-              <p className="text-xs text-gray-500">{item.subCategory}</p>
-            )}
-
-            <p className="mt-2 font-semibold">${item.price}</p>
-
-            <div className="flex gap-2 mt-4">
-              <button className="flex-1 bg-green-600 text-white py-1 rounded ">
-                Edit
-              </button>
-              <button className="flex-1 bg-red-600 text-white py-1 rounded">
-                Delete
-              </button>
-            </div>
-          </div>
+        {filteredMenu.map((item) => (
+          <StaffItemCard
+            key={item.id}
+            item={item}
+            onEdit={() => handleSave(item)}
+            onDelete={() => handleDelete(item.id)}
+          />
         ))}
       </div>
     </div>
