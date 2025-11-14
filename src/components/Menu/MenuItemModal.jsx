@@ -18,7 +18,7 @@ export default function MenuItemModal({ item, onClose }) {
 
   return (
     <div
-      className="fixed inset-9 z-50 flex items-center justify-center bg-black bg-opacity-60 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 p-4"
       onClick={onClose}
     >
       {/* Modal content: stop click from bubbling to overlay */}
