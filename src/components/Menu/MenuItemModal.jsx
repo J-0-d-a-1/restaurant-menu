@@ -83,7 +83,7 @@ export default function MenuItemModal({
         {/* Details */}
         <h2 className="text-xl font-bold mb-2">{item.name}</h2>
         {item.description && (
-          <p className="text-gray-700 mb-2">{item.description}</p>
+          <p className="text-gray-600 mb-2">{item.description}</p>
         )}
         <p className="font-bold text-lg">{item.price}</p>
       </div>

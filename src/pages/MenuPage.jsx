@@ -44,7 +44,7 @@ export default function MenuPage() {
   });
 
   return (
-    <div className="p-4 sm:p-6 min-h-screen">
+    <div className="p-2 sm:p-6 min-h-screen bg-gray-100">
       <h1 className="text-2xl sm:text-3xl font-bold mb-4">Menu</h1>
 
       {/* Category tabs */}
