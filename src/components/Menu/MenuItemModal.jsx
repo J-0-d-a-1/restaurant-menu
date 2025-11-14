@@ -1,9 +1,11 @@
-import { useState } from "react";
 import SoldOutBadge from "./SoldOutBadge";
 
-export default function MenuItemModal({ item, onClose }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
+export default function MenuItemModal({
+  item,
+  onClose,
+  currentIndex,
+  setCurrentIndex,
+}) {
   if (!item) return null;
 
   const hasMultiple = item.images.length > 1;
@@ -18,7 +20,7 @@ export default function MenuItemModal({ item, onClose }) {
 
   return (
     <div
-      className="fixed inset-9 z-50 flex items-center justify-center bg-black bg-opacity-60 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 p-4"
       onClick={onClose}
     >
       {/* Modal content: stop click from bubbling to overlay */}
@@ -28,7 +30,7 @@ export default function MenuItemModal({ item, onClose }) {
       >
         {/* Close Button */}
         <button
-          className="absolute top-1 right-3 text-gray-500 hover:text-gray-800 font-bold"
+          className="absolute top-1 right-3 text-gray-500 hover:text-gray-800 text-xl font-bold"
           onClick={onClose}
         >
           x
@@ -81,7 +83,7 @@ export default function MenuItemModal({ item, onClose }) {
         {/* Details */}
         <h2 className="text-xl font-bold mb-2">{item.name}</h2>
         {item.description && (
-          <p className="text-gray-700 mb-2">{item.description}</p>
+          <p className="text-gray-600 mb-2">{item.description}</p>
         )}
         <p className="font-bold text-lg">{item.price}</p>
       </div>

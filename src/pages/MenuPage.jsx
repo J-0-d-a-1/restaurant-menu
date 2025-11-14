@@ -21,6 +21,7 @@ export default function MenuPage() {
   const [subCategories, setSubCategories] = useState([]);
   const [selectedSubCategory, setSelectedSubCategpry] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   // update subcategories when category changes
   useEffect(() => {
@@ -43,7 +44,7 @@ export default function MenuPage() {
   });
 
   return (
-    <div className="p-4 sm:p-6 min-h-screen">
+    <div className="p-2 sm:p-6 min-h-screen bg-gray-100">
       <h1 className="text-2xl sm:text-3xl font-bold mb-4">Menu</h1>
 
       {/* Category tabs */}
@@ -66,7 +67,12 @@ export default function MenuPage() {
       {/* Menu modals */}
       <MenuItemModal
         item={selectedItem}
-        onClose={() => setSelectedItem(null)}
+        onClose={() => {
+          setSelectedItem(null);
+          setCurrentIndex(0);
+        }}
+        currentIndex={currentIndex}
+        setCurrentIndex={setCurrentIndex}
       />
     </div>
   );

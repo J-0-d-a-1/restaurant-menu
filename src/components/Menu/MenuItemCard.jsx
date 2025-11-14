@@ -10,7 +10,7 @@ export default function MenuItemCard({ item }) {
         className="w-full h-40 object-cover rounded-md mb-3"
       />
       <h3 className="text-lg font-semibold">{item.name}</h3>
-      <p className="text-gray-600 text-sm mb-1">{item.description}</p>
+      <p className="text-gray-400 text-sm mb-1">{item.description}</p>
       <p className="font-bold">{item.price}</p>
     </div>
   );
