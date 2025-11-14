@@ -1,9 +1,11 @@
-import { useState } from "react";
 import SoldOutBadge from "./SoldOutBadge";
 
-export default function MenuItemModal({ item, onClose }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
+export default function MenuItemModal({
+  item,
+  onClose,
+  currentIndex,
+  setCurrentIndex,
+}) {
   if (!item) return null;
 
   const hasMultiple = item.images.length > 1;
@@ -28,7 +30,7 @@ export default function MenuItemModal({ item, onClose }) {
       >
         {/* Close Button */}
         <button
-          className="absolute top-1 right-3 text-gray-500 hover:text-gray-800 font-bold"
+          className="absolute top-1 right-3 text-gray-500 hover:text-gray-800 text-xl font-bold"
           onClick={onClose}
         >
           x
