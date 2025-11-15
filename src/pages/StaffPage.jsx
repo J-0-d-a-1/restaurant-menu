@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { menu } from "../data/menuData";
 import StaffItemCard from "../components/Staff/StaffItemCard";
+import StaffMenuForm from "../components/Staff/StaffMenuForm";
 import CategoryTabs from "../components/Menu/CategoryTabs";
 
 export default function StaffPage() {
@@ -62,11 +63,11 @@ export default function StaffPage() {
       />
 
       {/* Form modal */}
-      {/* <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
         <div className="bg-white w-full max-w-md rounded-xl p-4">
-          Staff Menu Form
+          <StaffMenuForm categories={fixedCategories} />
         </div>
-      </div> */}
+      </div>
 
       {/* Menu Items List */}
       <div className="grid gap-4 sm:grid-cols-3">
