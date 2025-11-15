@@ -1,6 +1,10 @@
+import SoldOutBadge from "../Menu/SoldOutBadge";
+
 export default function StaffItemCard({ item, onEdit, onDelete }) {
   return (
-    <div className="bg-white rounded-lg p-4 shadow-sm border">
+    <div className="bg-white rounded-lg p-4 shadow-sm border relative">
+      {item.soldOut && <SoldOutBadge />}
+
       <img
         src={item.images[0]}
         alt={item.name}
