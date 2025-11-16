@@ -30,10 +30,13 @@ export default function StaffPage() {
       // update existing
       setItems((prev) =>
         prev.map((item) => {
-          item.id === editingItem.id ? { ...newItem, id: item.id } : item;
+          return item.id === editingItem.id ? { ...item, ...newItem } : item;
         })
       );
     }
+
+    // Reset form
+    setEditingItem(null);
   };
 
   const handleDelete = (id) => {
@@ -78,6 +81,7 @@ export default function StaffPage() {
           <div className="bg-white w-full max-w-md rounded-xl p-4">
             <StaffMenuForm
               categories={fixedCategories}
+              item={editingItem}
               onSave={handleSave}
               onCancel={() => setEditingItem(null)}
             />
