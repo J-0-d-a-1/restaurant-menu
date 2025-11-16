@@ -34,8 +34,6 @@ export default function StaffPage() {
         })
       );
     }
-
-    setEditingItem(null);
   };
 
   const handleDelete = (id) => {
@@ -62,24 +60,30 @@ export default function StaffPage() {
         onSelect={setSelectedCategory}
       />
 
-      {/* Form modal */}
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-        <div className="bg-white w-full max-w-md rounded-xl p-4">
-          <StaffMenuForm categories={fixedCategories} />
-        </div>
-      </div>
-
       {/* Menu Items List */}
       <div className="grid gap-4 sm:grid-cols-3">
         {filteredMenu.map((item) => (
           <StaffItemCard
             key={item.id}
             item={item}
-            onEdit={() => handleSave(item)}
+            onEdit={() => setEditingItem(item)}
             onDelete={() => handleDelete(item.id)}
           />
         ))}
       </div>
+
+      {/* Form modal */}
+      {editingItem !== null && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-md rounded-xl p-4">
+            <StaffMenuForm
+              categories={fixedCategories}
+              onSave={handleSave}
+              onCancel={() => setEditingItem(null)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-export default function StaffMenuForm({ categories }) {
+export default function StaffMenuForm({ categories, onSave, onCancel }) {
   return (
     <form className="space-y-4">
       <h2 className="text-xl font-bold">Edit Menu</h2>
@@ -49,6 +49,7 @@ export default function StaffMenuForm({ categories }) {
         <button
           type="button"
           className="flex-1 bg-gray-400 hover:bg-red-600 text-white py-2 rounded"
+          onClick={onCancel}
         >
           Cancel
         </button>
