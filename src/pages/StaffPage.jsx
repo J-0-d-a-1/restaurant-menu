@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { menu } from "../data/menuData";
 import StaffItemCard from "../components/Staff/StaffItemCard";
+import StaffMenuForm from "../components/Staff/StaffMenuForm";
 import CategoryTabs from "../components/Menu/CategoryTabs";
 
 export default function StaffPage() {
@@ -29,11 +30,12 @@ export default function StaffPage() {
       // update existing
       setItems((prev) =>
         prev.map((item) => {
-          item.id === editingItem.id ? { ...newItem, id: item.id } : item;
+          return item.id === editingItem.id ? { ...item, ...newItem } : item;
         })
       );
     }
 
+    // Reset form
     setEditingItem(null);
   };
 
@@ -61,24 +63,31 @@ export default function StaffPage() {
         onSelect={setSelectedCategory}
       />
 
-      {/* Form modal */}
-      {/* <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-        <div className="bg-white w-full max-w-md rounded-xl p-4">
-          Staff Menu Form
-        </div>
-      </div> */}
-
       {/* Menu Items List */}
       <div className="grid gap-4 sm:grid-cols-3">
         {filteredMenu.map((item) => (
           <StaffItemCard
             key={item.id}
             item={item}
-            onEdit={() => handleSave(item)}
+            onEdit={() => setEditingItem(item)}
             onDelete={() => handleDelete(item.id)}
           />
         ))}
       </div>
+
+      {/* Form modal */}
+      {editingItem !== null && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-md rounded-xl p-4">
+            <StaffMenuForm
+              categories={fixedCategories}
+              item={editingItem}
+              onSave={handleSave}
+              onCancel={() => setEditingItem(null)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
