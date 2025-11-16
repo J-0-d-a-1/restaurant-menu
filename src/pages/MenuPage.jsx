@@ -19,27 +19,28 @@ export default function MenuPage() {
 
   const [selectedCategory, setSelectedCategory] = useState(fixedCategories[0]);
   const [subCategories, setSubCategories] = useState([]);
-  const [selectedSubCategory, setSelectedSubCategpry] = useState("");
+  const [selectedSubCategory, setSelectedSubCategpry] = useState("All");
   const [selectedItem, setSelectedItem] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // update subcategories when category changes
   useEffect(() => {
     const filtered = menu.filter((item) => item.category === selectedCategory);
-    const subs = [
-      ...new Set(filtered.map((item) => item.subCategory).filter(Boolean)),
-    ];
+
+    const subs = [...new Set(filtered.map((item) => item.subCategory || ""))];
 
     setSubCategories(subs);
-    setSelectedSubCategpry(subs[0] || "");
+    setSelectedSubCategpry("All");
   }, [selectedCategory]);
 
   // Filter menu items
   const filteredMenu = menu.filter((item) => {
     const matchCategory = item.category === selectedCategory;
-    const matchSubCategory = item.subCategory
-      ? item.subCategory === selectedSubCategory
-      : true;
+    const matchSubCategory =
+      selectedSubCategory === "All" ||
+      item.subCategory === selectedSubCategory ||
+      (selectedSubCategory === "" && !item.subCategory);
+
     return matchCategory && matchSubCategory;
   });
 
