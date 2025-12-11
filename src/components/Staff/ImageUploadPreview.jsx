@@ -1,47 +1,47 @@
-import { useRef } from "react";
-
 export default function ImageUploadPreview({ images, setImages }) {
-  const inputRef = useRef();
+  // Add an image URL
+  const handleAddImage = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  const handleFiles = (e) => {
-    const files = Array.from(e.target.files);
+    const url = URL.createObjectURL(file);
 
-    const newImages = files.map((file) => ({
-      file,
-      preview: URL.createObjectURL(file),
-      id: Math.random(),
-    }));
-
-    setImages((prev) => [...prev, ...newImages]);
+    setImages([...images, url]);
   };
 
-  const removeImages = (id) => {
-    setImages((prev) => prev.filter((img) => img.id !== id));
+  // Remove image by index
+  const handleRemoveImages = (index) => {
+    setImages(images.filter((_, i) => i !== index));
   };
 
   return (
     <div>
       <label className="block font-semibold mb-2">Images</label>
 
-      <input
-        type="file"
-        multiple
-        accept="image/*"
-        ref={inputRef}
-        onChange={handleFiles}
-        className="mb-2"
-      />
+      <div className="flex gap-4 flex-wrap items-start">
+        {/* Upload button */}
+        <label className="cursor-pointer border rounded-md p-3 bg-gray-100 hover:bg-gray-200">
+          <span className="text-sm">+ Add Image</span>
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleAddImage}
+          />
+        </label>
 
-      <div className="grid grid-cols-3 gap-2">
-        {images.map((img) => (
-          <div key={img.id} className="relative">
+        {/* Thumbnails */}
+        {images.map((img, index) => (
+          <div key={index} className="relative w-24 h-24">
             <img
-              src={img.preview}
-              className="w-full h-20 object-cover rounded"
+              src={img}
+              alt=""
+              className="w-full h-20 object-cover rounded-md shadow"
             />
             <button
-              onClick={() => removeImages(img.id)}
-              className="absolute top-1 right-1 bg-black bg-opacity-60 text-white text-xs px-1 rounded"
+              type="button"
+              onClick={() => handleRemoveImages(index)}
+              className="absolute top-0 right-0 bg-black bg-opacity-60 text-white px-1 rounded"
             >
               x
             </button>

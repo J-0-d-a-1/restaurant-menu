@@ -13,10 +13,13 @@ export default function StaffMenuForm({ categories, item, onSave, onCancel }) {
     soldOut: false,
   });
 
+  const [images, setImages] = useState([]);
+
   // Whenever the editing item changes, update the form
   useEffect(() => {
     if (item) {
       setForm(item); // load existing values
+      setImages(item.images || []); // load existing image URLs
     } else {
       setForm(
         {
@@ -30,10 +33,9 @@ export default function StaffMenuForm({ categories, item, onSave, onCancel }) {
         },
         [item]
       );
+      setImages([]); // clear images on new item
     }
-  });
-
-  const [images, setImages] = useState([]);
+  }, [item]);
 
   const updateField = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
