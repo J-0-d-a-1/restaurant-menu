@@ -1,18 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SubCategorySelect from "./SubCategorySelect";
+import ImageUploadPreview from "./ImageUploadPreview";
 
 export default function StaffMenuForm({ categories, item, onSave, onCancel }) {
-  const [form, setForm] = useState(
-    item || {
-      name: "",
-      category: "Drinks",
-      subCategory: "",
-      description: "",
-      price: "",
-      images: [],
-      soldOut: false,
+  const [form, setForm] = useState({
+    name: "",
+    category: "Drinks",
+    subCategory: "",
+    description: "",
+    price: "",
+    images: [],
+    soldOut: false,
+  });
+
+  const [images, setImages] = useState([]);
+
+  // Whenever the editing item changes, update the form
+  useEffect(() => {
+    if (item) {
+      setForm(item); // load existing values
+      setImages(item.images || []); // load existing image URLs
+    } else {
+      setForm(
+        {
+          name: "",
+          category: "Drinks",
+          subCategory: "",
+          description: "",
+          price: "",
+          images: [],
+          soldOut: false,
+        },
+        [item]
+      );
+      setImages([]); // clear images on new item
     }
-  );
+  }, [item]);
 
   const updateField = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -20,7 +43,10 @@ export default function StaffMenuForm({ categories, item, onSave, onCancel }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(form);
+
+    const processedImages = images.map((img) => img.file);
+
+    onSave({ ...form, images: processedImages });
   };
 
   return (
@@ -28,6 +54,9 @@ export default function StaffMenuForm({ categories, item, onSave, onCancel }) {
       <h2 className="text-xl font-bold">
         {item ? "Edit Menu" : "Add New Menu"}
       </h2>
+
+      {/* Images */}
+      <ImageUploadPreview images={images} setImages={setImages} />
 
       {/* Name */}
       <input
