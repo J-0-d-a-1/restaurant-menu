@@ -1,5 +1,6 @@
 import { useState } from "react";
 import SubCategorySelect from "./SubCategorySelect";
+import ImageUploadPreview from "./ImageUploadPreview";
 
 export default function StaffMenuForm({ categories, item, onSave, onCancel }) {
   const [form, setForm] = useState(
@@ -14,13 +15,18 @@ export default function StaffMenuForm({ categories, item, onSave, onCancel }) {
     }
   );
 
+  const [images, setImages] = useState([]);
+
   const updateField = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(form);
+
+    const processedImages = images.map((img) => img.file);
+
+    onSave({ ...form, images: processedImages });
   };
 
   return (
@@ -28,6 +34,9 @@ export default function StaffMenuForm({ categories, item, onSave, onCancel }) {
       <h2 className="text-xl font-bold">
         {item ? "Edit Menu" : "Add New Menu"}
       </h2>
+
+      {/* Images */}
+      <ImageUploadPreview images={images} setImages={setImages} />
 
       {/* Name */}
       <input
