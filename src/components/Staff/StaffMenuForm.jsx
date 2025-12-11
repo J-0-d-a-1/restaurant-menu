@@ -1,19 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SubCategorySelect from "./SubCategorySelect";
 import ImageUploadPreview from "./ImageUploadPreview";
 
 export default function StaffMenuForm({ categories, item, onSave, onCancel }) {
-  const [form, setForm] = useState(
-    item || {
-      name: "",
-      category: "Drinks",
-      subCategory: "",
-      description: "",
-      price: "",
-      images: [],
-      soldOut: false,
+  const [form, setForm] = useState({
+    name: "",
+    category: "Drinks",
+    subCategory: "",
+    description: "",
+    price: "",
+    images: [],
+    soldOut: false,
+  });
+
+  // Whenever the editing item changes, update the form
+  useEffect(() => {
+    if (item) {
+      setForm(item); // load existing values
+    } else {
+      setForm(
+        {
+          name: "",
+          category: "Drinks",
+          subCategory: "",
+          description: "",
+          price: "",
+          images: [],
+          soldOut: false,
+        },
+        [item]
+      );
     }
-  );
+  });
 
   const [images, setImages] = useState([]);
 
