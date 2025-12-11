@@ -1,4 +1,5 @@
 import { useState } from "react";
+import SubCategorySelect from "./SubCategorySelect";
 
 export default function StaffMenuForm({ categories, item, onSave, onCancel }) {
   const [form, setForm] = useState(
@@ -30,6 +31,7 @@ export default function StaffMenuForm({ categories, item, onSave, onCancel }) {
 
       {/* Name */}
       <input
+        id="name"
         type="text"
         placeholder="Name"
         value={form.name}
@@ -51,10 +53,10 @@ export default function StaffMenuForm({ categories, item, onSave, onCancel }) {
       </select>
 
       {/* SubCategory */}
-      <input
-        type="text"
-        placeholder="SubCategory"
-        className="w-full border rounded p-2"
+      <SubCategorySelect
+        category={form.category}
+        value={form.subCategory}
+        onChange={(value) => updateField("subCategory", value)}
       />
 
       {/* Description */}
