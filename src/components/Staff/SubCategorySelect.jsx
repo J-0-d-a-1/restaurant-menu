@@ -1,13 +1,9 @@
-const subCategories = {
-  Drinks: ["Tap Beer", "Cocktails"],
-  Salad: ["Large", "Small"],
-  "Sashimi & Sushi": ["Sashimi", "Sushi"],
-  Tapas: ["Hot", "Cold"],
-  "Rice & Noodles": [],
-  Desserts: [],
-};
-
-export default function SubCategorySelect({ value, category, onChange }) {
+export default function SubCategorySelect({
+  subCategories,
+  value,
+  category,
+  onChange,
+}) {
   const list = subCategories[category] || [];
 
   if (list.length === 0) return null;

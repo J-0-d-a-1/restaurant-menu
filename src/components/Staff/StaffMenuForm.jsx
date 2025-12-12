@@ -3,7 +3,13 @@ import SubCategorySelect from "./SubCategorySelect";
 import ImageUploadPreview from "./ImageUploadPreview";
 import CategorySelect from "./CategorySelect";
 
-export default function StaffMenuForm({ categories, item, onSave, onCancel }) {
+export default function StaffMenuForm({
+  categories,
+  subCategories,
+  item,
+  onSave,
+  onCancel,
+}) {
   const [form, setForm] = useState({
     name: "",
     category: "Drinks",
@@ -78,6 +84,7 @@ export default function StaffMenuForm({ categories, item, onSave, onCancel }) {
 
       {/* SubCategory */}
       <SubCategorySelect
+        subCategories={subCategories}
         category={form.category}
         value={form.subCategory}
         onChange={(value) => updateField("subCategory", value)}
