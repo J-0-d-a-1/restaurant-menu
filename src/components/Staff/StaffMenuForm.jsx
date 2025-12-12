@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import SubCategorySelect from "./SubCategorySelect";
 import ImageUploadPreview from "./ImageUploadPreview";
+import CategorySelect from "./CategorySelect";
 
 export default function StaffMenuForm({ categories, item, onSave, onCancel }) {
   const [form, setForm] = useState({
@@ -69,17 +70,11 @@ export default function StaffMenuForm({ categories, item, onSave, onCancel }) {
       />
 
       {/* Category */}
-      <select
+      <CategorySelect
+        categories={categories}
         value={form.category}
-        onChange={(e) => updateField("category", e.target.value)}
-        className="w-full border rounded p-2"
-      >
-        {categories.map((category) => (
-          <option key={category} value={category}>
-            {category}
-          </option>
-        ))}
-      </select>
+        onChange={(value) => updateField("category", value)}
+      />
 
       {/* SubCategory */}
       <SubCategorySelect
