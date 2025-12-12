@@ -80,6 +80,14 @@ export default function StaffPage() {
       setItems((prev) => prev.filter((item) => item.id !== id));
   };
 
+  const handleToggleHide = (id) => {
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, hide: !item.hide } : item
+      )
+    );
+  };
+
   return (
     <div className="min-h-screen p-2 bg-gray-100">
       <h1 className="text-2xl sm:text-3xl font-bold mb-4">Menu Editor</h1>
@@ -112,6 +120,7 @@ export default function StaffPage() {
           <StaffItemCard
             key={item.id}
             item={item}
+            onToggleHide={handleToggleHide}
             onEdit={() => setEditingItem(item)}
             onDelete={() => handleDelete(item.id)}
           />

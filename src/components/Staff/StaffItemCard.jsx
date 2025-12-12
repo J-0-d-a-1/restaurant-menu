@@ -1,9 +1,23 @@
 import SoldOutBadge from "../Menu/SoldOutBadge";
 
-export default function StaffItemCard({ item, onEdit, onDelete }) {
+export default function StaffItemCard({
+  item,
+  onToggleHide,
+  onEdit,
+  onDelete,
+}) {
   return (
     <div className="bg-white rounded-lg p-4 shadow-sm border relative">
       {item.soldOut && <SoldOutBadge />}
+
+      {/* Toggle for hide */}
+      <label className="absolute z-50 top-2 right-2">
+        <input
+          type="checkbox"
+          checked={item.hide}
+          onChange={() => onToggleHide(item.id)}
+        />
+      </label>
 
       <img
         src={item.images[0]}
