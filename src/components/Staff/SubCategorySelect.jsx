@@ -21,7 +21,6 @@ export default function SubCategorySelect({ value, category, onChange }) {
           value={value}
           onChange={(e) => onChange(e.target.value)}
         >
-          <option value="value">{value}</option>
           {list.map((s) => (
             <option key={s} value={s}>
               {s}
