@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { menu } from "../data/menuData";
 import StaffItemCard from "../components/Staff/StaffItemCard";
 import StaffMenuForm from "../components/Staff/StaffMenuForm";
 import CategoryTabs from "../components/Menu/CategoryTabs";
+import SubCategoryTabs from "../components/Menu/SubCategoryTabs";
 
 export default function StaffPage() {
   const fixedCategories = [
@@ -15,14 +16,40 @@ export default function StaffPage() {
     "Dessert",
   ];
 
+  const fixedSubCategories = {
+    Drinks: ["Cocktails", "Tap Beer"],
+    Salad: ["Large", "Small"],
+    "Sashimi & Sushi": ["Sashimi", "Sushi"],
+    Tapas: ["Hot", "Cold"],
+    "Rice & Noodles": [],
+    Desserts: [],
+  };
+
   const [items, setItems] = useState(menu);
   const [editingItem, setEditingItem] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(fixedCategories[0]);
+  const [subCategories, setSubCategories] = useState([]);
+  const [selectedSubCategory, setSelectedSubCategpry] = useState("All");
+
+  // update subcategories when category changes
+  useEffect(() => {
+    const filtered = menu.filter((item) => item.category === selectedCategory);
+
+    const subs = [...new Set(filtered.map((item) => item.subCategory || ""))];
+
+    setSubCategories(subs);
+    setSelectedSubCategpry("All");
+  }, [selectedCategory]);
 
   // Filter menu items
-  const filteredMenu = items.filter((item) => {
+  const filteredMenu = menu.filter((item) => {
     const matchCategory = item.category === selectedCategory;
-    return matchCategory;
+    const matchSubCategory =
+      selectedSubCategory === "All" ||
+      item.subCategory === selectedSubCategory ||
+      (selectedSubCategory === "" && !item.subCategory);
+
+    return matchCategory && matchSubCategory;
   });
 
   const handleSave = (newItem) => {
@@ -72,6 +99,13 @@ export default function StaffPage() {
         onSelect={setSelectedCategory}
       />
 
+      {/* SubCategory Tabs */}
+      <SubCategoryTabs
+        subCategories={subCategories}
+        selected={selectedSubCategory}
+        onSelect={setSelectedSubCategpry}
+      />
+
       {/* Menu Items List */}
       <div className="grid gap-4 sm:grid-cols-3">
         {filteredMenu.map((item) => (
@@ -90,6 +124,7 @@ export default function StaffPage() {
           <div className="bg-white w-full max-w-md rounded-xl p-4">
             <StaffMenuForm
               categories={fixedCategories}
+              subCategories={fixedSubCategories}
               item={editingItem}
               onSave={handleSave}
               onCancel={() => setEditingItem(null)}
