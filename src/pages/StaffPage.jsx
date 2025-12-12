@@ -33,6 +33,12 @@ export default function StaffPage() {
           return item.id === editingItem.id ? { ...item, ...newItem } : item;
         })
       );
+    } else {
+      // Add New
+      setItems((prev) => [
+        ...prev,
+        { ...newItem, id: Date.now() }, // Temporary ID
+      ]);
     }
 
     // Reset form
@@ -52,7 +58,10 @@ export default function StaffPage() {
       <h1 className="text-2xl sm:text-3xl font-bold mb-4">Menu Editor</h1>
 
       {/* Add new item button */}
-      <button className="mb-4 bg-blue-600 text-white px-4 py-2 rounded-lg">
+      <button
+        className="mb-4 bg-blue-600 text-white px-4 py-2 rounded-lg"
+        onClick={() => setEditingItem()}
+      >
         + Add New Menu
       </button>
 
