@@ -14,9 +14,10 @@ export default function StaffItemCard({
       <label className="absolute z-50 top-2 right-2">
         <input
           type="checkbox"
-          checked={item.hide}
+          checked={!item.hide}
           onChange={() => onToggleHide(item.id)}
         />
+        <span className="text-xs ml-1">{item.hide ? "Hidden" : "Visible"}</span>
       </label>
 
       <img
