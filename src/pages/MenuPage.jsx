@@ -41,7 +41,7 @@ export default function MenuPage() {
       item.subCategory === selectedSubCategory ||
       (selectedSubCategory === "" && !item.subCategory);
 
-    return matchCategory && matchSubCategory;
+    return matchCategory && matchSubCategory && item.hide === false;
   });
 
   return (

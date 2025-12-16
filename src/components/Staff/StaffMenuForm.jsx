@@ -18,6 +18,7 @@ export default function StaffMenuForm({
     price: "",
     images: [],
     soldOut: false,
+    hide: false,
   });
 
   const [images, setImages] = useState([]);
@@ -37,6 +38,7 @@ export default function StaffMenuForm({
           price: "",
           images: [],
           soldOut: false,
+          hide: false,
         },
         [item]
       );
