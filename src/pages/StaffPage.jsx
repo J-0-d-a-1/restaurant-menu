@@ -76,7 +76,7 @@ export default function StaffPage() {
     if (editingItem?.id) {
       // update existing
       const { error } = await supabase
-        .form("menus")
+        .from("menus")
         .update({
           name: newItem.name,
           category: newItem.category,
@@ -102,7 +102,7 @@ export default function StaffPage() {
     } else {
       // Add New
       const { data, error } = await supabase
-        .form("menus")
+        .from("menus")
         .insert([
           {
             name: newItem.name,
@@ -129,18 +129,39 @@ export default function StaffPage() {
     setEditingItem(null);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     const userConfirmed = window.confirm(
       "Are you sure you want to delete this item?"
     );
-    if (userConfirmed)
-      setItems((prev) => prev.filter((item) => item.id !== id));
+
+    if (!userConfirmed) return;
+
+    const { error } = await supabase.from("menus").delete().eq("id", id);
+
+    if (error) {
+      console.error("Delete failed:", error.message);
+      alert("Failed to delete menu.");
+      return;
+    }
+
+    // Update UI after deleted
+    setItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const handleToggleHide = (id) => {
+  const handleToggleHide = async (id, currentHide) => {
+    const { error } = await supabase
+      .from("menus")
+      .update({ hide: !currentHide })
+      .eq("id", id);
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
     setItems((prev) =>
       prev.map((item) =>
-        item.id === id ? { ...item, hide: !item.hide } : item
+        item.id === id ? { ...item, hide: !currentHide } : item
       )
     );
   };
@@ -177,7 +198,7 @@ export default function StaffPage() {
           <StaffItemCard
             key={item.id}
             item={item}
-            onToggleHide={handleToggleHide}
+            onToggleHide={() => handleToggleHide(item.id, item.hide)}
             onEdit={() => setEditingItem(item)}
             onDelete={() => handleDelete(item.id)}
           />
