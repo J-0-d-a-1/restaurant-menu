@@ -1,6 +1,7 @@
+import { supabase } from "../lib/supabase";
+
 import { useEffect, useState } from "react";
 
-import { menu } from "../data/menuData";
 import StaffItemCard from "../components/Staff/StaffItemCard";
 import StaffMenuForm from "../components/Staff/StaffMenuForm";
 import CategoryTabs from "../components/Menu/CategoryTabs";
@@ -25,36 +26,74 @@ export default function StaffPage() {
     Desserts: [],
   };
 
-  const [items, setItems] = useState(menu);
+  const [items, setItems] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(fixedCategories[0]);
   const [subCategories, setSubCategories] = useState([]);
   const [selectedSubCategory, setSelectedSubCategpry] = useState("All");
 
+  // fetching Menus from supabase
+  useEffect(() => {
+    const fetchMenus = async () => {
+      const { data, error } = await supabase
+        .from("menus")
+        .select("*")
+        .order("id");
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      setItems(data);
+    };
+
+    fetchMenus();
+  }, []);
+
   // update subcategories when category changes
   useEffect(() => {
-    const filtered = menu.filter((item) => item.category === selectedCategory);
+    const filtered = items.filter((item) => item.category === selectedCategory);
 
-    const subs = [...new Set(filtered.map((item) => item.subCategory || ""))];
+    const subs = [...new Set(filtered.map((item) => item.sub_category || ""))];
 
     setSubCategories(subs);
     setSelectedSubCategpry("All");
-  }, [selectedCategory]);
+  }, [selectedCategory, items]);
 
   // Filter menu items
-  const filteredMenu = menu.filter((item) => {
+  const filteredMenu = items.filter((item) => {
     const matchCategory = item.category === selectedCategory;
     const matchSubCategory =
       selectedSubCategory === "All" ||
-      item.subCategory === selectedSubCategory ||
-      (selectedSubCategory === "" && !item.subCategory);
+      item.sub_category === selectedSubCategory ||
+      (selectedSubCategory === "" && !item.sub_category);
 
     return matchCategory && matchSubCategory;
   });
 
-  const handleSave = (newItem) => {
-    if (editingItem) {
+  const handleSave = async (newItem) => {
+    if (editingItem?.id) {
       // update existing
+      const { error } = await supabase
+        .form("menus")
+        .update({
+          name: newItem.name,
+          category: newItem.category,
+          sub_category: newItem.subCategpry || null,
+          description: newItem.description,
+          price: newItem.price,
+          images: newItem.images,
+          sold_out: newItem.soldOut,
+          hide: newItem.hide,
+        })
+        .eq("id", editingItem.id);
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
       setItems((prev) =>
         prev.map((item) => {
           return item.id === editingItem.id ? { ...item, ...newItem } : item;
@@ -62,10 +101,28 @@ export default function StaffPage() {
       );
     } else {
       // Add New
-      setItems((prev) => [
-        ...prev,
-        { ...newItem, id: Date.now() }, // Temporary ID
-      ]);
+      const { data, error } = await supabase
+        .form("menus")
+        .insert([
+          {
+            name: newItem.name,
+            category: newItem.category,
+            sub_category: newItem.subCategpry || null,
+            description: newItem.description,
+            price: newItem.price,
+            images: newItem.images,
+            sold_out: newItem.soldOut,
+            hide: newItem.hide ?? false,
+          },
+        ])
+        .select();
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      setItems((prev) => [...prev, data[0]]);
     }
 
     // Reset form
@@ -95,7 +152,7 @@ export default function StaffPage() {
       {/* Add new item button */}
       <button
         className="mb-4 bg-blue-600 text-white px-4 py-2 rounded-lg"
-        onClick={() => setEditingItem()}
+        onClick={() => setEditingItem({})}
       >
         + Add New Menu
       </button>
