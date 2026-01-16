@@ -1,4 +1,4 @@
-import { menu } from "../data/menuData";
+import { supabase } from "../lib/supabase";
 
 import { useEffect, useState } from "react";
 
@@ -17,29 +17,49 @@ export default function MenuPage() {
     "Dessert",
   ];
 
+  const [menus, setMenus] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(fixedCategories[0]);
   const [subCategories, setSubCategories] = useState([]);
   const [selectedSubCategory, setSelectedSubCategpry] = useState("All");
   const [selectedItem, setSelectedItem] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // Read data from supabase
+  useEffect(() => {
+    const fetchMenus = async () => {
+      const { data, error } = await supabase
+        .from("menus")
+        .select("*")
+        .eq("hide", false);
+
+      if (error) {
+        console.error(error);
+      } else {
+        setMenus(data);
+      }
+    };
+
+    fetchMenus();
+  }, []);
+
   // update subcategories when category changes
   useEffect(() => {
-    const filtered = menu.filter((item) => item.category === selectedCategory);
+    const filtered = menus.filter((item) => item.category === selectedCategory);
 
-    const subs = [...new Set(filtered.map((item) => item.subCategory || ""))];
+    const subs = [...new Set(filtered.map((item) => item.sub_category || ""))];
 
     setSubCategories(subs);
     setSelectedSubCategpry("All");
-  }, [selectedCategory]);
+  }, [selectedCategory, menus]);
 
   // Filter menu items
-  const filteredMenu = menu.filter((item) => {
+  const filteredMenu = menus.filter((item) => {
     const matchCategory = item.category === selectedCategory;
+
     const matchSubCategory =
       selectedSubCategory === "All" ||
-      item.subCategory === selectedSubCategory ||
-      (selectedSubCategory === "" && !item.subCategory);
+      item.sub_category === selectedSubCategory ||
+      (selectedSubCategory === "" && !item.sub_category);
 
     return matchCategory && matchSubCategory && item.hide === false;
   });
