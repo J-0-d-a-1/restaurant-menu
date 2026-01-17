@@ -1,3 +1,5 @@
+import { supabase } from "../../lib/supabase";
+
 import { useEffect, useState } from "react";
 import SubCategorySelect from "./SubCategorySelect";
 import ImageUploadPreview from "./ImageUploadPreview";
@@ -50,12 +52,42 @@ export default function StaffMenuForm({
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e) => {
+  // Uploading images
+  const uploadImage = async (file) => {
+    const fileName = `${crypto.randomUUID()}-${file.name}`;
+
+    const { error } = await supabase.storage
+      .from("menu-images")
+      .upload(fileName, file);
+
+    if (error) throw error;
+
+    return supabase.storage.from("menu-images").getPublicUrl(fileName).data
+      .publicUrl;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const processedImages = images.map((img) => img.file);
+    try {
+      const uploadedImages = [];
 
-    onSave({ ...form, images: processedImages });
+      for (const img of images) {
+        // Existing image URL
+        if (typeof img === "string") {
+          uploadedImages.push(img);
+        } else if (img.file) {
+          // New image file
+          const url = await uploadImage(img.file);
+          uploadedImages.push(url);
+        }
+      }
+
+      onSave({ ...form, images: uploadedImages });
+    } catch (err) {
+      console.error("Image upload failed:", err);
+      alert("Failed to upload images");
+    }
   };
 
   return (
