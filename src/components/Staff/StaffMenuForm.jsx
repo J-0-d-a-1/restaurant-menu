@@ -27,25 +27,36 @@ export default function StaffMenuForm({
 
   // Whenever the editing item changes, update the form
   useEffect(() => {
-    if (item) {
-      setForm(item); // load existing values
-      setImages(item.images || []); // load existing image URLs
-    } else {
-      setForm(
-        {
-          name: "",
-          category: "Drinks",
-          subCategory: "",
-          description: "",
-          price: "",
-          images: [],
-          soldOut: false,
-          hide: false,
-        },
-        [item]
-      );
+    if (!item) {
+      setForm({
+        name: "",
+        category: "Drinks",
+        subCategory: "",
+        description: "",
+        price: "",
+        images: [],
+        soldOut: false,
+        hide: false,
+      });
       setImages([]); // clear images on new item
+      return;
     }
+
+    setForm({
+      name: item.name ?? "",
+      category: item.category ?? "Drinks",
+      subCategory: item.subCategory ?? "",
+      description: item.description ?? "",
+      price: item.price ?? "",
+      soldOut: item.soldOut ?? false,
+      hide: item.hide ?? false,
+    }); // load existing values
+
+    setImages(
+      Array.isArray(item.images)
+        ? item.images.map((url) => ({ preview: url })) // load existing image URLs
+        : []
+    );
   }, [item]);
 
   const updateField = (field, value) => {
@@ -70,20 +81,20 @@ export default function StaffMenuForm({
     e.preventDefault();
 
     try {
-      const uploadedImages = [];
+      const finalImages = [];
 
       for (const img of images) {
         // Existing image URL
-        if (typeof img === "string") {
-          uploadedImages.push(img);
-        } else if (img.file) {
+        if (!img.file) {
+          finalImages.push(img.preview);
+        } else {
           // New image file
           const url = await uploadImage(img.file);
-          uploadedImages.push(url);
+          finalImages.push(url);
         }
       }
 
-      onSave({ ...form, images: uploadedImages });
+      onSave({ ...form, images: finalImages });
     } catch (err) {
       console.error("Image upload failed:", err);
       alert("Failed to upload images");
@@ -91,7 +102,7 @@ export default function StaffMenuForm({
   };
 
   return (
-    <form className="space-y-4">
+    <form className="space-y-4" onSubmit={handleSubmit}>
       <h2 className="text-xl font-bold">
         {item ? "Edit Menu" : "Add New Menu"}
       </h2>
@@ -154,7 +165,7 @@ export default function StaffMenuForm({
       {/* Save or Cancel */}
       <div className="flex gap-2">
         <button
-          onClick={(e) => handleSubmit(e)}
+          type="submit"
           className="flex-1 bg-blue-600 text-white py-2 rounded"
         >
           Save

@@ -1,12 +1,25 @@
+import { useEffect } from "react";
+
 export default function ImageUploadPreview({ images, setImages }) {
+  // using supabase urls
+  useEffect(() => {
+    return () => {
+      images.forEach((img) => {
+        if (img.file) {
+          URL.revokeObjectURL(img.preview);
+        }
+      });
+    };
+  }, [images]);
+
   // Add an image URL
   const handleAddImage = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const url = URL.createObjectURL(file);
+    const preview = URL.createObjectURL(file);
 
-    setImages([...images, url]);
+    setImages((prev) => [...prev, { file, preview }]);
   };
 
   // Remove image by index
@@ -34,7 +47,7 @@ export default function ImageUploadPreview({ images, setImages }) {
         {images.map((img, index) => (
           <div key={index} className="relative w-24 h-24">
             <img
-              src={img}
+              src={img.preview}
               alt=""
               className="w-full h-20 object-cover rounded-md shadow"
             />
