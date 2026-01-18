@@ -26,11 +26,30 @@ export default function StaffPage() {
     Desserts: [],
   };
 
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+
   const [items, setItems] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(fixedCategories[0]);
   const [subCategories, setSubCategories] = useState([]);
   const [selectedSubCategory, setSelectedSubCategpry] = useState("All");
+
+  // authentication
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setUser(data.session?.user ?? null);
+      setLoading(false);
+    });
+  }, []);
+
+  // loading
+  if (loading) return <p>Loading...</p>;
+
+  // no user
+  if (!user) {
+    return <p>You must be logged in to access this page.</p>;
+  }
 
   // fetching Menus from supabase
   useEffect(() => {
