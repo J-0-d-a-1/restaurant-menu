@@ -9,31 +9,18 @@ import StaffItemCard from "../components/Staff/StaffItemCard";
 import StaffMenuForm from "../components/Staff/StaffMenuForm";
 import CategoryTabs from "../components/Menu/CategoryTabs";
 import SubCategoryTabs from "../components/Menu/SubCategoryTabs";
+import {
+  extractCategories,
+  extractSubCategories,
+} from "../utils/categoryUtils";
 
 export default function StaffPage() {
-  const fixedCategories = [
-    "Drinks",
-    "Salad",
-    "Sashimi & Sushi",
-    "Tapas",
-    "Rice & Noodles",
-    "Dessert",
-  ];
-
-  const fixedSubCategories = {
-    Drinks: ["Cocktails", "Tap Beer"],
-    Salad: ["Large", "Small"],
-    "Sashimi & Sushi": ["Sashimi", "Sushi"],
-    Tapas: ["Hot", "Cold"],
-    "Rice & Noodles": [],
-    Desserts: [],
-  };
-
   const { user, loading } = useAuth();
 
   const [items, setItems] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState(fixedCategories[0]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [subCategories, setSubCategories] = useState([]);
   const [selectedSubCategory, setSelectedSubCategpry] = useState("All");
 
@@ -50,7 +37,17 @@ export default function StaffPage() {
         return;
       }
 
-      setItems(data.map(mapMenuFromDB));
+      // setting menu from DB
+      const mapped = data.map(mapMenuFromDB);
+      setItems(mapped);
+
+      // setting category from DB
+      const cats = extractCategories(mapped);
+      setCategories(cats);
+
+      if (cats.length > 0) {
+        selectedCategory(cats[0]);
+      }
     };
 
     fetchMenus();
@@ -58,13 +55,11 @@ export default function StaffPage() {
 
   // update subcategories when category changes
   useEffect(() => {
-    const filtered = items.filter((item) => item.category === selectedCategory);
-
-    const subs = [...new Set(filtered.map((item) => item.sub_category || ""))];
+    const subs = extractSubCategories(items, selectedCategory);
 
     setSubCategories(subs);
     setSelectedSubCategpry("All");
-  }, [selectedCategory, items]);
+  }, [items, selectedCategory]);
 
   // loading
   if (loading) return <p>Loading...</p>;
@@ -84,8 +79,8 @@ export default function StaffPage() {
     const matchCategory = item.category === selectedCategory;
     const matchSubCategory =
       selectedSubCategory === "All" ||
-      item.sub_category === selectedSubCategory ||
-      (selectedSubCategory === "" && !item.sub_category);
+      item.subCategory === selectedSubCategory ||
+      (selectedSubCategory === "" && !item.subCategory);
 
     return matchCategory && matchSubCategory;
   });
@@ -178,7 +173,7 @@ export default function StaffPage() {
 
       {/* Category tabs */}
       <CategoryTabs
-        categories={fixedCategories}
+        categories={categories}
         selected={selectedCategory}
         onSelect={setSelectedCategory}
       />
@@ -208,8 +203,8 @@ export default function StaffPage() {
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-md rounded-xl p-4">
             <StaffMenuForm
-              categories={fixedCategories}
-              subCategories={fixedSubCategories}
+              categories={categories}
+              subCategories={subCategories}
               item={editingItem}
               onSave={handleSave}
               onCancel={() => setEditingItem(null)}
