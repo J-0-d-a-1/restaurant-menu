@@ -3,6 +3,7 @@ import { supabase } from "../lib/supabase";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "../hooks/useAuth";
+import { mapMenuFromDB, mapMenuToDB } from "../utils/menuMapper";
 
 import StaffItemCard from "../components/Staff/StaffItemCard";
 import StaffMenuForm from "../components/Staff/StaffMenuForm";
@@ -49,7 +50,7 @@ export default function StaffPage() {
         return;
       }
 
-      setItems(data);
+      setItems(data.map(mapMenuFromDB));
     };
 
     fetchMenus();
