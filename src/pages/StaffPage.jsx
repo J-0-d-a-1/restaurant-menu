@@ -2,6 +2,8 @@ import { supabase } from "../lib/supabase";
 
 import { useEffect, useState } from "react";
 
+import { useAuth } from "../hooks/useAuth";
+
 import StaffItemCard from "../components/Staff/StaffItemCard";
 import StaffMenuForm from "../components/Staff/StaffMenuForm";
 import CategoryTabs from "../components/Menu/CategoryTabs";
@@ -26,8 +28,7 @@ export default function StaffPage() {
     Desserts: [],
   };
 
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  const { user, loading } = useAuth();
 
   const [items, setItems] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
@@ -48,7 +49,12 @@ export default function StaffPage() {
 
   // no user
   if (!user) {
-    return <p>You must be logged in to access this page.</p>;
+    return (
+      <div className="p-6">
+        <h2 className="text-xl font-bold">Access denied</h2>
+        <p>You must be logged in to access this page.</p>
+      </div>
+    );
   }
 
   // fetching Menus from supabase
