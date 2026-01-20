@@ -95,16 +95,7 @@ export default function StaffPage() {
       // update existing
       const { error } = await supabase
         .from("menus")
-        .update({
-          name: newItem.name,
-          category: newItem.category,
-          sub_category: newItem.subCategpry || null,
-          description: newItem.description,
-          price: newItem.price,
-          images: newItem.images,
-          sold_out: newItem.soldOut,
-          hide: newItem.hide,
-        })
+        .update(mapMenuToDB(newItem))
         .eq("id", editingItem.id);
 
       if (error) {
@@ -121,18 +112,7 @@ export default function StaffPage() {
       // Add New
       const { data, error } = await supabase
         .from("menus")
-        .insert([
-          {
-            name: newItem.name,
-            category: newItem.category,
-            sub_category: newItem.subCategpry || null,
-            description: newItem.description,
-            price: newItem.price,
-            images: newItem.images,
-            sold_out: newItem.soldOut,
-            hide: newItem.hide ?? false,
-          },
-        ])
+        .insert([mapMenuToDB(newItem)])
         .select();
 
       if (error) {
@@ -140,7 +120,7 @@ export default function StaffPage() {
         return;
       }
 
-      setItems((prev) => [...prev, data[0]]);
+      setItems((prev) => [...prev, mapMenuFromDB(data[0])]);
     }
 
     // Reset form
