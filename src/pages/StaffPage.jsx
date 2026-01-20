@@ -1,6 +1,9 @@
+import { supabase } from "../lib/supabase";
+
 import { useEffect, useState } from "react";
 
-import { menu } from "../data/menuData";
+import { useAuth } from "../hooks/useAuth";
+
 import StaffItemCard from "../components/Staff/StaffItemCard";
 import StaffMenuForm from "../components/Staff/StaffMenuForm";
 import CategoryTabs from "../components/Menu/CategoryTabs";
@@ -25,36 +28,89 @@ export default function StaffPage() {
     Desserts: [],
   };
 
-  const [items, setItems] = useState(menu);
+  const { user, loading } = useAuth();
+
+  const [items, setItems] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(fixedCategories[0]);
   const [subCategories, setSubCategories] = useState([]);
   const [selectedSubCategory, setSelectedSubCategpry] = useState("All");
 
+  // fetching Menus from supabase
+  useEffect(() => {
+    const fetchMenus = async () => {
+      const { data, error } = await supabase
+        .from("menus")
+        .select("*")
+        .order("id");
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      setItems(data);
+    };
+
+    fetchMenus();
+  }, []);
+
   // update subcategories when category changes
   useEffect(() => {
-    const filtered = menu.filter((item) => item.category === selectedCategory);
+    const filtered = items.filter((item) => item.category === selectedCategory);
 
-    const subs = [...new Set(filtered.map((item) => item.subCategory || ""))];
+    const subs = [...new Set(filtered.map((item) => item.sub_category || ""))];
 
     setSubCategories(subs);
     setSelectedSubCategpry("All");
-  }, [selectedCategory]);
+  }, [selectedCategory, items]);
+
+  // loading
+  if (loading) return <p>Loading...</p>;
+
+  // no user
+  if (!user) {
+    return (
+      <div className="p-6">
+        <h2 className="text-xl font-bold">Access denied</h2>
+        <p>You must be logged in to access this page.</p>
+      </div>
+    );
+  }
 
   // Filter menu items
-  const filteredMenu = menu.filter((item) => {
+  const filteredMenu = items.filter((item) => {
     const matchCategory = item.category === selectedCategory;
     const matchSubCategory =
       selectedSubCategory === "All" ||
-      item.subCategory === selectedSubCategory ||
-      (selectedSubCategory === "" && !item.subCategory);
+      item.sub_category === selectedSubCategory ||
+      (selectedSubCategory === "" && !item.sub_category);
 
     return matchCategory && matchSubCategory;
   });
 
-  const handleSave = (newItem) => {
-    if (editingItem) {
+  const handleSave = async (newItem) => {
+    if (editingItem?.id) {
       // update existing
+      const { error } = await supabase
+        .from("menus")
+        .update({
+          name: newItem.name,
+          category: newItem.category,
+          sub_category: newItem.subCategpry || null,
+          description: newItem.description,
+          price: newItem.price,
+          images: newItem.images,
+          sold_out: newItem.soldOut,
+          hide: newItem.hide,
+        })
+        .eq("id", editingItem.id);
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
       setItems((prev) =>
         prev.map((item) => {
           return item.id === editingItem.id ? { ...item, ...newItem } : item;
@@ -62,28 +118,67 @@ export default function StaffPage() {
       );
     } else {
       // Add New
-      setItems((prev) => [
-        ...prev,
-        { ...newItem, id: Date.now() }, // Temporary ID
-      ]);
+      const { data, error } = await supabase
+        .from("menus")
+        .insert([
+          {
+            name: newItem.name,
+            category: newItem.category,
+            sub_category: newItem.subCategpry || null,
+            description: newItem.description,
+            price: newItem.price,
+            images: newItem.images,
+            sold_out: newItem.soldOut,
+            hide: newItem.hide ?? false,
+          },
+        ])
+        .select();
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      setItems((prev) => [...prev, data[0]]);
     }
 
     // Reset form
     setEditingItem(null);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     const userConfirmed = window.confirm(
       "Are you sure you want to delete this item?"
     );
-    if (userConfirmed)
-      setItems((prev) => prev.filter((item) => item.id !== id));
+
+    if (!userConfirmed) return;
+
+    const { error } = await supabase.from("menus").delete().eq("id", id);
+
+    if (error) {
+      console.error("Delete failed:", error.message);
+      alert("Failed to delete menu.");
+      return;
+    }
+
+    // Update UI after deleted
+    setItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const handleToggleHide = (id) => {
+  const handleToggleHide = async (id, currentHide) => {
+    const { error } = await supabase
+      .from("menus")
+      .update({ hide: !currentHide })
+      .eq("id", id);
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
     setItems((prev) =>
       prev.map((item) =>
-        item.id === id ? { ...item, hide: !item.hide } : item
+        item.id === id ? { ...item, hide: !currentHide } : item
       )
     );
   };
@@ -95,7 +190,7 @@ export default function StaffPage() {
       {/* Add new item button */}
       <button
         className="mb-4 bg-blue-600 text-white px-4 py-2 rounded-lg"
-        onClick={() => setEditingItem()}
+        onClick={() => setEditingItem({})}
       >
         + Add New Menu
       </button>
@@ -120,7 +215,7 @@ export default function StaffPage() {
           <StaffItemCard
             key={item.id}
             item={item}
-            onToggleHide={handleToggleHide}
+            onToggleHide={() => handleToggleHide(item.id, item.hide)}
             onEdit={() => setEditingItem(item)}
             onDelete={() => handleDelete(item.id)}
           />
