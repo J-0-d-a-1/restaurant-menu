@@ -8,9 +8,14 @@ import CategoryTabs from "../components/Menu/CategoryTabs";
 import SubCategoryTabs from "../components/Menu/SubCategoryTabs";
 import MenuGrid from "../components/Menu/MenuGrid";
 import MenuItemModal from "../components/Menu/MenuItemModal";
+import {
+  extractCategories,
+  extractSubCategories,
+} from "../utils/categoryUtils";
 
 export default function MenuPage() {
   const [menus, setMenus] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [subCategories, setSubCategories] = useState([]);
   const [selectedSubCategory, setSelectedSubCategpry] = useState("All");
@@ -30,31 +35,17 @@ export default function MenuPage() {
         console.error(error);
         return;
       }
-      setMenus(data.map(mapMenuFromDB));
+
+      const mapped = data.map(mapMenuFromDB);
+      setMenus(mapped);
+
+      const cats = extractCategories(mapped);
+      setCategories(cats);
+      setSelectedCategory(cats[0]);
     };
 
     fetchMenus();
   }, []);
-
-  // firstshown category
-  const CATEGORY_PRIORITY = ["Drinks"];
-
-  // Derived categories
-  const categories = [...new Set(menus.map((item) => item.category))].sort(
-    (a, b) => {
-      const aIndex = CATEGORY_PRIORITY.indexOf(a);
-      const bIndex = CATEGORY_PRIORITY.indexOf(b);
-
-      if (aIndex !== -1 || bIndex !== -1) {
-        return (
-          (aIndex === -1 ? Infinity : aIndex) -
-          (bIndex === -1 ? Infinity : bIndex)
-        );
-      }
-
-      return a.localeCompare(b);
-    }
-  );
 
   // setting category
   useEffect(() => {
@@ -65,17 +56,9 @@ export default function MenuPage() {
 
   // update subcategories when category changes
   useEffect(() => {
-    if (!selectedCategory) return;
-
-    const filtered = menus.filter((item) => item.category === selectedCategory);
-
-    const subs = [
-      ...new Set(filtered.map((item) => item.subCategory).filter(Boolean)),
-    ];
-
-    setSubCategories(subs);
+    setSubCategories(extractSubCategories(menus, selectedCategory));
     setSelectedSubCategpry("All");
-  }, [selectedCategory, menus]);
+  }, [menus, selectedCategory]);
 
   // Filter menu items
   const filteredMenu = menus.filter((item) => {
