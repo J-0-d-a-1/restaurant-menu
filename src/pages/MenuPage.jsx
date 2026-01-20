@@ -2,6 +2,8 @@ import { supabase } from "../lib/supabase";
 
 import { useEffect, useState } from "react";
 
+import { mapMenuFromDB } from "../utils/menuMapper";
+
 import CategoryTabs from "../components/Menu/CategoryTabs";
 import SubCategoryTabs from "../components/Menu/SubCategoryTabs";
 import MenuGrid from "../components/Menu/MenuGrid";
@@ -30,13 +32,14 @@ export default function MenuPage() {
       const { data, error } = await supabase
         .from("menus")
         .select("*")
-        .eq("hide", false);
+        .eq("hide", false)
+        .order("id");
 
       if (error) {
         console.error(error);
-      } else {
-        setMenus(data);
+        return;
       }
+      setMenus(data.map(mapMenuFromDB));
     };
 
     fetchMenus();
