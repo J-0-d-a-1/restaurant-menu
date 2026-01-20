@@ -10,17 +10,8 @@ import MenuGrid from "../components/Menu/MenuGrid";
 import MenuItemModal from "../components/Menu/MenuItemModal";
 
 export default function MenuPage() {
-  const fixedCategories = [
-    "Drinks",
-    "Salad",
-    "Sashimi & Sushi",
-    "Tapas",
-    "Rice & Noodles",
-    "Dessert",
-  ];
-
   const [menus, setMenus] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(fixedCategories[0]);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [subCategories, setSubCategories] = useState([]);
   const [selectedSubCategory, setSelectedSubCategpry] = useState("All");
   const [selectedItem, setSelectedItem] = useState(null);
@@ -45,11 +36,42 @@ export default function MenuPage() {
     fetchMenus();
   }, []);
 
+  // firstshown category
+  const CATEGORY_PRIORITY = ["Drinks"];
+
+  // Derived categories
+  const categories = [...new Set(menus.map((item) => item.category))].sort(
+    (a, b) => {
+      const aIndex = CATEGORY_PRIORITY.indexOf(a);
+      const bIndex = CATEGORY_PRIORITY.indexOf(b);
+
+      if (aIndex !== -1 || bIndex !== -1) {
+        return (
+          (aIndex === -1 ? Infinity : aIndex) -
+          (bIndex === -1 ? Infinity : bIndex)
+        );
+      }
+
+      return a.localeCompare(b);
+    }
+  );
+
+  // setting category
+  useEffect(() => {
+    if (categories.length && !selectedCategory) {
+      setSelectedCategory(categories[0]);
+    }
+  }, [categories, selectedCategory]);
+
   // update subcategories when category changes
   useEffect(() => {
+    if (!selectedCategory) return;
+
     const filtered = menus.filter((item) => item.category === selectedCategory);
 
-    const subs = [...new Set(filtered.map((item) => item.subCategory || ""))];
+    const subs = [
+      ...new Set(filtered.map((item) => item.subCategory).filter(Boolean)),
+    ];
 
     setSubCategories(subs);
     setSelectedSubCategpry("All");
@@ -64,7 +86,7 @@ export default function MenuPage() {
       item.subCategory === selectedSubCategory ||
       (selectedSubCategory === "" && !item.subCategory);
 
-    return matchCategory && matchSubCategory && item.hide === false;
+    return matchCategory && matchSubCategory;
   });
 
   return (
@@ -73,7 +95,7 @@ export default function MenuPage() {
 
       {/* Category tabs */}
       <CategoryTabs
-        categories={fixedCategories}
+        categories={categories}
         selected={selectedCategory}
         onSelect={setSelectedCategory}
       />
