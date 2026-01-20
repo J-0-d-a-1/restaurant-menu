@@ -36,27 +36,6 @@ export default function StaffPage() {
   const [subCategories, setSubCategories] = useState([]);
   const [selectedSubCategory, setSelectedSubCategpry] = useState("All");
 
-  // authentication
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setUser(data.session?.user ?? null);
-      setLoading(false);
-    });
-  }, []);
-
-  // loading
-  if (loading) return <p>Loading...</p>;
-
-  // no user
-  if (!user) {
-    return (
-      <div className="p-6">
-        <h2 className="text-xl font-bold">Access denied</h2>
-        <p>You must be logged in to access this page.</p>
-      </div>
-    );
-  }
-
   // fetching Menus from supabase
   useEffect(() => {
     const fetchMenus = async () => {
@@ -85,6 +64,19 @@ export default function StaffPage() {
     setSubCategories(subs);
     setSelectedSubCategpry("All");
   }, [selectedCategory, items]);
+
+  // loading
+  if (loading) return <p>Loading...</p>;
+
+  // no user
+  if (!user) {
+    return (
+      <div className="p-6">
+        <h2 className="text-xl font-bold">Access denied</h2>
+        <p>You must be logged in to access this page.</p>
+      </div>
+    );
+  }
 
   // Filter menu items
   const filteredMenu = items.filter((item) => {
