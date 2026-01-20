@@ -49,7 +49,7 @@ export default function MenuPage() {
   useEffect(() => {
     const filtered = menus.filter((item) => item.category === selectedCategory);
 
-    const subs = [...new Set(filtered.map((item) => item.sub_category || ""))];
+    const subs = [...new Set(filtered.map((item) => item.subCategory || ""))];
 
     setSubCategories(subs);
     setSelectedSubCategpry("All");
@@ -61,8 +61,8 @@ export default function MenuPage() {
 
     const matchSubCategory =
       selectedSubCategory === "All" ||
-      item.sub_category === selectedSubCategory ||
-      (selectedSubCategory === "" && !item.sub_category);
+      item.subCategory === selectedSubCategory ||
+      (selectedSubCategory === "" && !item.subCategory);
 
     return matchCategory && matchSubCategory && item.hide === false;
   });
