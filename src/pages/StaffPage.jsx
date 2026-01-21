@@ -9,10 +9,6 @@ import StaffItemCard from "../components/Staff/StaffItemCard";
 import StaffMenuForm from "../components/Staff/StaffMenuForm";
 import CategoryTabs from "../components/Menu/CategoryTabs";
 import SubCategoryTabs from "../components/Menu/SubCategoryTabs";
-import {
-  extractCategories,
-  extractSubCategories,
-} from "../utils/categoryUtils";
 
 export default function StaffPage() {
   const { user, loading } = useAuth();
