@@ -8,46 +8,45 @@ import CategoryTabs from "../components/Menu/CategoryTabs";
 import SubCategoryTabs from "../components/Menu/SubCategoryTabs";
 import MenuGrid from "../components/Menu/MenuGrid";
 import MenuItemModal from "../components/Menu/MenuItemModal";
-import {
-  extractCategories,
-  extractSubCategories,
-} from "../utils/categoryUtils";
 
 export default function MenuPage() {
   const [menus, setMenus] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [subCategories, setSubCategories] = useState([]);
-  const [selectedSubCategory, setSelectedSubCategpry] = useState("All");
+  const [selectedSubCategory, setSelectedSubCateopry] = useState("All");
   const [selectedItem, setSelectedItem] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Read data from supabase
   useEffect(() => {
-    const fetchMenus = async () => {
-      const { data, error } = await supabase
-        .from("menus")
-        .select("*")
-        .eq("hide", false)
-        .order("id");
+    const fetchInitialData = async () => {
+      const [
+        { data: catData, error: catError },
+        { data: menuData, error: menuError },
+      ] = await Promise.all([
+        supabase.from("categories").select("*").order("sort_order"),
+        supabase
+          .from("menus")
+          .select("*")
+          .eq("hide", false)
+          .order("sort_order"),
+      ]);
 
-      if (error) {
-        console.error(error);
+      if (catError || menuError) {
+        console.error(catError || menuError);
         return;
       }
 
-      const mapped = data.map(mapMenuFromDB);
-      setMenus(mapped);
-
-      const cats = extractCategories(mapped);
-      setCategories(cats);
-      setSelectedCategory(cats[0]);
+      setCategories(catData);
+      setSelectedCategory(catData[0]);
+      setMenus(menuData.map(mapMenuFromDB));
     };
 
-    fetchMenus();
+    fetchInitialData();
   }, []);
 
-  // setting category
+  // fetching categories
   useEffect(() => {
     if (categories.length && !selectedCategory) {
       setSelectedCategory(categories[0]);
@@ -56,18 +55,34 @@ export default function MenuPage() {
 
   // update subcategories when category changes
   useEffect(() => {
-    setSubCategories(extractSubCategories(menus, selectedCategory));
-    setSelectedSubCategpry("All");
-  }, [menus, selectedCategory]);
+    if (!selectedCategory) return;
+
+    const fetchSubCategories = async () => {
+      const { data, error } = await supabase
+        .from("subcategories")
+        .select("*")
+        .eq("category_id", selectedCategory.id)
+        .order("sort_order");
+
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      setSubCategories(data);
+      setSelectedSubCateopry("All");
+    };
+
+    fetchSubCategories();
+  }, [selectedCategory]);
 
   // Filter menu items
   const filteredMenu = menus.filter((item) => {
-    const matchCategory = item.category === selectedCategory;
+    const matchCategory = item.categoryId === selectedCategory?.id;
 
     const matchSubCategory =
       selectedSubCategory === "All" ||
-      item.subCategory === selectedSubCategory ||
-      (selectedSubCategory === "" && !item.subCategory);
+      item.subCategoryId === selectedSubCategory?.id;
 
     return matchCategory && matchSubCategory;
   });
@@ -87,7 +102,7 @@ export default function MenuPage() {
       <SubCategoryTabs
         subCategories={subCategories}
         selected={selectedSubCategory}
-        onSelect={setSelectedSubCategpry}
+        onSelect={setSelectedSubCateopry}
       />
 
       {/* Menu grids */}
