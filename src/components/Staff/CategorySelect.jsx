@@ -9,8 +9,8 @@ export default function CategorySelect({ categories, value, onChange }) {
           onChange={(e) => onChange(e.target.value)}
         >
           {categories.map((category) => (
-            <option key={category} value={category}>
-              {category}
+            <option key={category.id} value={category.id}>
+              {category.name}
             </option>
           ))}
         </select>
