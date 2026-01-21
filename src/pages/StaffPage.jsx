@@ -26,40 +26,48 @@ export default function StaffPage() {
 
   // fetching Menus from supabase
   useEffect(() => {
-    const fetchMenus = async () => {
-      const { data, error } = await supabase
-        .from("menus")
-        .select("*")
-        .order("id");
+    const fetchInitialData = async () => {
+      const [
+        { data: catData, error: catError },
+        { data: menuData, error: menuError },
+      ] = await Promise.all([
+        supabase.from("categories").select("*").order("sort_order"),
+        supabase.from("menus").select("*").order("sort_order"),
+      ]);
 
-      if (error) {
-        console.error(error);
+      if (catError || menuError) {
+        console.error(catError || menuError);
         return;
       }
 
-      // setting menu from DB
-      const mapped = data.map(mapMenuFromDB);
-      setItems(mapped);
-
       // setting category from DB
-      const cats = extractCategories(mapped);
-      setCategories(cats);
+      setCategories(catData);
+      setSelectedCategory(catData[0]);
 
-      if (cats.length > 0) {
-        selectedCategory(cats[0]);
-      }
+      // setting menu from DB
+      setItems(menuData.map(mapMenuFromDB));
     };
 
-    fetchMenus();
+    fetchInitialData();
   }, []);
 
   // update subcategories when category changes
   useEffect(() => {
-    const subs = extractSubCategories(items, selectedCategory);
+    if (!selectedCategory) return;
 
-    setSubCategories(subs);
-    setSelectedSubCategpry("All");
-  }, [items, selectedCategory]);
+    const fetchSubCategories = async () => {
+      const { data } = await supabase
+        .from("subcategories")
+        .select("*")
+        .eq("category_id", selectedCategory.id)
+        .order("sort_order");
+
+      setSubCategories(data);
+      setSelectedSubCategpry("All");
+    };
+
+    fetchSubCategories();
+  }, [selectedCategory]);
 
   // loading
   if (loading) return <p>Loading...</p>;
@@ -76,11 +84,11 @@ export default function StaffPage() {
 
   // Filter menu items
   const filteredMenu = items.filter((item) => {
-    const matchCategory = item.category === selectedCategory;
+    const matchCategory = item.categoryId === selectedCategory?.id;
+
     const matchSubCategory =
       selectedSubCategory === "All" ||
-      item.subCategory === selectedSubCategory ||
-      (selectedSubCategory === "" && !item.subCategory);
+      item.subCategoryId === selectedSubCategory.id;
 
     return matchCategory && matchSubCategory;
   });
