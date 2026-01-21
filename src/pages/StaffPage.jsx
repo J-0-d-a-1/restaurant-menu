@@ -17,6 +17,7 @@ export default function StaffPage() {
   const [editingItem, setEditingItem] = useState(null);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [allSubCategories, setAllSubCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [selectedSubCategory, setSelectedSubCategpry] = useState("All");
 
@@ -25,23 +26,29 @@ export default function StaffPage() {
     const fetchInitialData = async () => {
       const [
         { data: catData, error: catError },
+        { data: subData, error: subError },
         { data: menuData, error: menuError },
       ] = await Promise.all([
         supabase.from("categories").select("*").order("sort_order"),
+        supabase.from("subcategories").select("*").order("sort_order"),
         supabase.from("menus").select("*").order("sort_order"),
       ]);
 
-      if (catError || menuError) {
-        console.error(catError || menuError);
+      if (catError || subError || menuError) {
+        console.error(catError || subError || menuError);
         return;
       }
 
       // setting category from DB
       setCategories(catData);
-      setSelectedCategory(catData[0]);
-
+      // setting all subcategory from DB
+      setAllSubCategories(subData);
       // setting menu from DB
       setItems(menuData.map(mapMenuFromDB));
+
+      if (catData.length > 0) {
+        setSelectedCategory(catData[0]);
+      }
     };
 
     fetchInitialData();
@@ -51,19 +58,13 @@ export default function StaffPage() {
   useEffect(() => {
     if (!selectedCategory) return;
 
-    const fetchSubCategories = async () => {
-      const { data } = await supabase
-        .from("subcategories")
-        .select("*")
-        .eq("category_id", selectedCategory.id)
-        .order("sort_order");
+    const filtered = allSubCategories.filter(
+      (sub) => sub.category_id === selectedCategory.id
+    );
 
-      setSubCategories(data);
-      setSelectedSubCategpry("All");
-    };
-
-    fetchSubCategories();
-  }, [selectedCategory]);
+    setSubCategories(filtered);
+    setSelectedSubCategpry("All");
+  }, [selectedCategory, allSubCategories]);
 
   // loading
   if (loading) return <p>Loading...</p>;
@@ -208,7 +209,7 @@ export default function StaffPage() {
           <div className="bg-white w-full max-w-md rounded-xl p-4">
             <StaffMenuForm
               categories={categories}
-              subCategories={subCategories}
+              allSubCategories={allSubCategories}
               item={editingItem}
               onSave={handleSave}
               onCancel={() => setEditingItem(null)}

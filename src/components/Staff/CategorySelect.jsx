@@ -8,7 +8,7 @@ export default function CategorySelect({ categories, value, onChange }) {
           value={value?.id ?? ""}
           onChange={(e) => {
             const selected = categories.find(
-              (category) => category.id === Number(e.target.value)
+              (category) => category.id === e.target.value
             );
             onChange(selected);
           }}

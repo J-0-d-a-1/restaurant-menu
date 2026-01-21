@@ -1,37 +1,59 @@
 import { supabase } from "../../lib/supabase";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import SubCategorySelect from "./SubCategorySelect";
 import ImageUploadPreview from "./ImageUploadPreview";
 import CategorySelect from "./CategorySelect";
 
 export default function StaffMenuForm({
   categories,
-  subCategories,
+  allSubCategories,
   item,
   onSave,
   onCancel,
 }) {
   const [form, setForm] = useState({
     name: "",
-    category: "Drinks",
-    subCategory: "",
+    category: null,
+    subCategory: null,
     description: "",
     price: "",
     images: [],
     soldOut: false,
     hide: false,
   });
+  const isInitializing = useRef(true);
 
   const [images, setImages] = useState([]);
+
+  // filter subcategories
+  const filteredSubCategories = useMemo(() => {
+    if (!form.category) return [];
+
+    return allSubCategories.filter(
+      (subcategory) => subcategory.category_id === form.category.id
+    );
+  }, [form.category, allSubCategories]);
+
+  // reset subcategories when category changed
+  useEffect(() => {
+    if (isInitializing.current) return;
+
+    setForm((prev) => ({
+      ...prev,
+      subCategory: null,
+    }));
+  }, [form.category]);
 
   // Whenever the editing item changes, update the form
   useEffect(() => {
     if (!item) {
+      isInitializing.current = false;
+
       setForm({
         name: "",
-        category: "Drinks",
-        subCategory: "",
+        category: null,
+        subCategory: null,
         description: "",
         price: "",
         images: [],
@@ -42,10 +64,20 @@ export default function StaffMenuForm({
       return;
     }
 
+    const selectedCategory = categories.find(
+      (category) => category.id === item.categoryId
+    );
+
+    const selectedSubCategory = allSubCategories.find(
+      (subCategory) => subCategory.id === item.subCategoryId
+    );
+
+    isInitializing.current = true;
+
     setForm({
       name: item.name ?? "",
-      category: item.category ?? "Drinks",
-      subCategory: item.subCategory ?? "",
+      category: selectedCategory ?? null,
+      subCategory: selectedSubCategory ?? null,
       description: item.description ?? "",
       price: item.price ?? "",
       soldOut: item.soldOut ?? false,
@@ -57,7 +89,12 @@ export default function StaffMenuForm({
         ? item.images.map((url) => ({ preview: url })) // load existing image URLs
         : []
     );
-  }, [item]);
+
+    // allow future category changes to reset subcategory
+    setTimeout(() => {
+      isInitializing.current = false;
+    }, 0);
+  }, [item, categories, allSubCategories]);
 
   const updateField = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -94,7 +131,16 @@ export default function StaffMenuForm({
         }
       }
 
-      onSave({ ...form, images: finalImages });
+      onSave({
+        name: form.name,
+        categoryId: form.category?.id ?? null,
+        subCategoryId: form.subCategory?.id ?? null,
+        description: form.description,
+        price: form.price,
+        soldOut: form.soldOut,
+        hide: form.hide,
+        images: finalImages,
+      });
     } catch (err) {
       console.error("Image upload failed:", err);
       alert("Failed to upload images");
@@ -129,8 +175,7 @@ export default function StaffMenuForm({
 
       {/* SubCategory */}
       <SubCategorySelect
-        subCategories={subCategories}
-        category={form.category}
+        subCategories={filteredSubCategories}
         value={form.subCategory}
         onChange={(value) => updateField("subCategory", value)}
       />

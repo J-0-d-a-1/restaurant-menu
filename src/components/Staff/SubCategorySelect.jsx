@@ -8,7 +8,7 @@ export default function SubCategorySelect({ subCategories, value, onChange }) {
           value={value?.id ?? ""}
           onChange={(e) => {
             const selected = subCategories.find(
-              (subCategory) => subCategory.id === Number(e.target.value)
+              (subCategory) => subCategory.id === e.target.value
             );
             onChange(selected);
           }}
