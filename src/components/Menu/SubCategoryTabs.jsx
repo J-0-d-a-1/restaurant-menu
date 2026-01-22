@@ -1,6 +1,4 @@
 export default function SubCategoryTabs({ subCategories, selected, onSelect }) {
-  if (!subCategories.length) return null;
-
   return (
     <div className="flex gap-2 overflow-x-auto pb-2 mb-5 text-center border-b justify-center">
       {/* All tab */}
