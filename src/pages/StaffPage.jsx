@@ -19,7 +19,7 @@ export default function StaffPage() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [allSubCategories, setAllSubCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
-  const [selectedSubCategory, setSelectedSubCategpry] = useState("All");
+  const [selectedSubCategory, setSelectedSubCategpry] = useState(null);
 
   // fetching Menus from supabase
   useEffect(() => {
@@ -63,7 +63,7 @@ export default function StaffPage() {
     );
 
     setSubCategories(filtered);
-    setSelectedSubCategpry("All");
+    setSelectedSubCategpry(null);
   }, [selectedCategory, allSubCategories]);
 
   // loading
@@ -79,15 +79,18 @@ export default function StaffPage() {
     );
   }
 
-  // Filter menu items
   const filteredMenu = items.filter((item) => {
-    const matchCategory = item.categoryId === selectedCategory?.id;
+    // category filter
+    if (selectedCategory && item.categoryId !== selectedCategory.id) {
+      return false;
+    }
 
-    const matchSubCategory =
-      selectedSubCategory === "All" ||
-      item.subCategoryId === selectedSubCategory.id;
+    // subcategory filter
+    if (selectedSubCategory && item.subCategoryId !== selectedSubCategory.id) {
+      return false;
+    }
 
-    return matchCategory && matchSubCategory;
+    return true;
   });
 
   const handleSave = async (newItem) => {

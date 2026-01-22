@@ -10,10 +10,10 @@ export default function SubCategorySelect({ subCategories, value, onChange }) {
             const selected = subCategories.find(
               (subCategory) => subCategory.id === e.target.value
             );
-            onChange(selected);
+            onChange(selected ?? null);
           }}
         >
-          <option>None</option>
+          <option>All</option>
 
           {subCategories.map((subCategory) => (
             <option key={subCategory.id} value={subCategory.id}>

@@ -3,7 +3,7 @@ export const mapMenuFromDB = (row) => ({
   id: row.id,
   name: row.name,
   categoryId: row.category_id,
-  subCategoryId: row.sub_category_id,
+  subCategoryId: row.subcategory_id,
   description: row.description,
   price: row.price,
   soldOut: row.sold_out,
