@@ -13,6 +13,8 @@ function App() {
         <Route path="/menu" element={<MenuPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/staff" element={<StaffPage />} />
+
+        <Route path="*" element={<HomePage />} />
       </Routes>
     </Router>
   );
