@@ -9,10 +9,6 @@ import StaffItemCard from "../components/Staff/StaffItemCard";
 import StaffMenuForm from "../components/Staff/StaffMenuForm";
 import CategoryTabs from "../components/Menu/CategoryTabs";
 import SubCategoryTabs from "../components/Menu/SubCategoryTabs";
-import {
-  extractCategories,
-  extractSubCategories,
-} from "../utils/categoryUtils";
 
 export default function StaffPage() {
   const { user, loading } = useAuth();
@@ -20,46 +16,55 @@ export default function StaffPage() {
   const [items, setItems] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [allSubCategories, setAllSubCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
-  const [selectedSubCategory, setSelectedSubCategpry] = useState("All");
+  const [selectedSubCategory, setSelectedSubCategpry] = useState(null);
 
   // fetching Menus from supabase
   useEffect(() => {
-    const fetchMenus = async () => {
-      const { data, error } = await supabase
-        .from("menus")
-        .select("*")
-        .order("id");
+    const fetchInitialData = async () => {
+      const [
+        { data: catData, error: catError },
+        { data: subData, error: subError },
+        { data: menuData, error: menuError },
+      ] = await Promise.all([
+        supabase.from("categories").select("*").order("sort_order"),
+        supabase.from("subcategories").select("*").order("sort_order"),
+        supabase.from("menus").select("*").order("sort_order"),
+      ]);
 
-      if (error) {
-        console.error(error);
+      if (catError || subError || menuError) {
+        console.error(catError || subError || menuError);
         return;
       }
 
-      // setting menu from DB
-      const mapped = data.map(mapMenuFromDB);
-      setItems(mapped);
-
       // setting category from DB
-      const cats = extractCategories(mapped);
-      setCategories(cats);
+      setCategories(catData);
+      // setting all subcategory from DB
+      setAllSubCategories(subData);
+      // setting menu from DB
+      setItems(menuData.map(mapMenuFromDB));
 
-      if (cats.length > 0) {
-        selectedCategory(cats[0]);
+      if (catData.length > 0) {
+        setSelectedCategory(catData[0]);
       }
     };
 
-    fetchMenus();
+    fetchInitialData();
   }, []);
 
   // update subcategories when category changes
   useEffect(() => {
-    const subs = extractSubCategories(items, selectedCategory);
+    if (!selectedCategory) return;
 
-    setSubCategories(subs);
-    setSelectedSubCategpry("All");
-  }, [items, selectedCategory]);
+    const filtered = allSubCategories.filter(
+      (sub) => sub.category_id === selectedCategory.id
+    );
+
+    setSubCategories(filtered);
+    setSelectedSubCategpry(null);
+  }, [selectedCategory, allSubCategories]);
 
   // loading
   if (loading) return <p>Loading...</p>;
@@ -74,15 +79,18 @@ export default function StaffPage() {
     );
   }
 
-  // Filter menu items
   const filteredMenu = items.filter((item) => {
-    const matchCategory = item.category === selectedCategory;
-    const matchSubCategory =
-      selectedSubCategory === "All" ||
-      item.subCategory === selectedSubCategory ||
-      (selectedSubCategory === "" && !item.subCategory);
+    // category filter
+    if (selectedCategory && item.categoryId !== selectedCategory.id) {
+      return false;
+    }
 
-    return matchCategory && matchSubCategory;
+    // subcategory filter
+    if (selectedSubCategory && item.subCategoryId !== selectedSubCategory.id) {
+      return false;
+    }
+
+    return true;
   });
 
   const handleSave = async (newItem) => {
@@ -204,7 +212,7 @@ export default function StaffPage() {
           <div className="bg-white w-full max-w-md rounded-xl p-4">
             <StaffMenuForm
               categories={categories}
-              subCategories={subCategories}
+              allSubCategories={allSubCategories}
               item={editingItem}
               onSave={handleSave}
               onCancel={() => setEditingItem(null)}

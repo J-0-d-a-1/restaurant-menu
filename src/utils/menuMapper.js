@@ -2,23 +2,23 @@
 export const mapMenuFromDB = (row) => ({
   id: row.id,
   name: row.name,
-  category: row.category,
-  subCategory: row.sub_category,
+  categoryId: row.category_id,
+  subCategoryId: row.subcategory_id,
   description: row.description,
   price: row.price,
-  images: row.images,
   soldOut: row.sold_out,
   hide: row.hide,
+  images: row.images,
 });
 
 // App -> DB
 export const mapMenuToDB = (item) => ({
   name: item.name,
-  category: item.category,
-  sub_category: item.subCategory || null,
+  category_id: item.categoryId,
+  subcategory_id: item.subCategoryId,
   description: item.description,
   price: item.price,
-  images: item.images,
   sold_out: item.soldOut,
-  hide: item.hide ?? false,
+  hide: item.hide,
+  images: item.images,
 });

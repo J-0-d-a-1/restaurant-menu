@@ -1,25 +1,23 @@
-export default function SubCategorySelect({
-  subCategories,
-  value,
-  category,
-  onChange,
-}) {
-  const list = subCategories[category] || [];
-
-  if (list.length === 0) return null;
-
+export default function SubCategorySelect({ subCategories, value, onChange }) {
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
-        <label className="font-medium">Subcategory</label>
+        <label className="font-medium">Subcategory:</label>
         <select
           className="w-full border rounded p-2"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
+          value={value?.id ?? ""}
+          onChange={(e) => {
+            const selected = subCategories.find(
+              (subCategory) => subCategory.id === e.target.value
+            );
+            onChange(selected ?? null);
+          }}
         >
-          {list.map((s) => (
-            <option key={s} value={s}>
-              {s}
+          <option>All</option>
+
+          {subCategories.map((subCategory) => (
+            <option key={subCategory.id} value={subCategory.id}>
+              {subCategory.name}
             </option>
           ))}
         </select>
