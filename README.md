@@ -89,6 +89,8 @@ VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_anon_key
 ```
 
+---
+
 ## 🔮 Future Improvements
 
 - Staff authentication
@@ -96,6 +98,8 @@ VITE_SUPABASE_ANON_KEY=your_anon_key
 - Better mobile UI
 - Menu preview mode
 - QR-code entry for customers
+
+---
 
 ## 📄 License
 
