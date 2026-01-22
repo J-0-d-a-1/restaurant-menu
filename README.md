@@ -1,16 +1,102 @@
-# React + Vite
+# Restaurant Menu Management App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web-based restaurant menu application with separate views for customers and staff.
+Staff can manage categories, subcategories, and menu items, while customers can browse the menu.
 
-Currently, two official plugins are available:
+This project is a work in progress and focuses on functionality over polish.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🔗 Live Demo
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+👉 https://restaurant-menu-porfolio.vercel.app
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## ✨ Features
+
+### Customer (Menu Page)
+
+- View menu items by category and subcategory
+- Filter menu items dynamically
+- Responsive layout
+
+### Staff (Staff Page)
+
+- Create, edit, and delete menu items
+- Manage categories and subcategories
+- Upload and preview images
+- Mark items as sold out or hidden
+- Sort items using `sort_order`
+
+---
+
+## 🛠️ Tech Stack
+
+**Frontend**
+
+- React
+- React Router
+- Tailwind CSS
+
+**Backend**
+
+- Supabase (PostgreSQL + Storage)
+- Supabase REST API
+
+**Deployment**
+
+- Vercel
+
+---
+
+## 🧠 Data Structure (Simplified)
+
+- categories
+- sub_categories
+- menus
+
+Relations:
+
+- menus.category_id → categories.id
+- menus.sub_category_id → sub_categories.id
+
+---
+
+## 🚧 Known Limitations
+
+- UI/UX is minimal
+- No role-based access control
+- Error handling can be improved
+
+These will be addressed in future iterations.
+
+---
+
+## 📦 Getting Started (Local)
+
+```bash
+git clone https://github.com/your-username/your-repo-name.git
+cd your-repo-name
+npm install
+npm run dev
+```
+
+Create a .env file:
+
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_anon_key
+```
+
+## 🔮 Future Improvements
+
+- Staff authentication
+- Role-based access control
+- Better mobile UI
+- Menu preview mode
+- QR-code entry for customers
+
+## 📄 License
+
+This project is for leaning and portfolio purposes.
