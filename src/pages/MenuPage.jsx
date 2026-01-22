@@ -14,7 +14,7 @@ export default function MenuPage() {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [subCategories, setSubCategories] = useState([]);
-  const [selectedSubCategory, setSelectedSubCateopry] = useState("All");
+  const [selectedSubCategory, setSelectedSubCateopry] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -70,7 +70,7 @@ export default function MenuPage() {
       }
 
       setSubCategories(data);
-      setSelectedSubCateopry("All");
+      setSelectedSubCateopry(null);
     };
 
     fetchSubCategories();
@@ -81,7 +81,7 @@ export default function MenuPage() {
     const matchCategory = item.categoryId === selectedCategory?.id;
 
     const matchSubCategory =
-      selectedSubCategory === "All" ||
+      selectedSubCategory === null ||
       item.subCategoryId === selectedSubCategory?.id;
 
     return matchCategory && matchSubCategory;
