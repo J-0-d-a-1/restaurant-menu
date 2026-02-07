@@ -89,4 +89,15 @@ export function useMenuData() {
 
     fetchSub();
   }, [state.selectedCategory]);
+
+  // Filtered menu
+  const filteredMenu = state.menus.filter((item) => {
+    const matchCategory = item.categoryId === state.selectedCategory?.id;
+    const matchSub =
+      !state.selectedSubCategory ||
+      item.subCategoryId === state.selectedSubCategory.id;
+    return matchCategory && matchSub;
+  });
+
+  return { state, dispatch, filteredMenu };
 }
