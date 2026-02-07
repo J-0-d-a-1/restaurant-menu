@@ -29,6 +29,7 @@ function reducer(state, action) {
         ...state,
         selectedCategory: action.category,
         selectedSubCategory: null,
+        subCategories: [],
       };
 
     case "SET_SUBCATEGORIES":
@@ -38,7 +39,7 @@ function reducer(state, action) {
       return { ...state, selectedSubCategory: action.selectedSubCategory };
 
     case "SET_SELECTED_ITEM":
-      return { ...state, selectedItem: action.selectedItem };
+      return { ...state, selectedItem: action.selectedItem, currentIndex: 0 };
 
     case "SET_INDEX":
       return { ...state, currentIndex: action.currentIndex };
@@ -93,10 +94,12 @@ export function useMenuData() {
   // Filtered menu
   const filteredMenu = state.menus.filter((item) => {
     const matchCategory = item.categoryId === state.selectedCategory?.id;
-    const matchSub =
-      !state.selectedSubCategory ||
-      item.subCategoryId === state.selectedSubCategory.id;
-    return matchCategory && matchSub;
+
+    const matchSubCategory =
+      state.selectedSubCategory === null ||
+      item.subCategoryId === state.selectedSubCategory?.id;
+
+    return matchCategory && matchSubCategory;
   });
 
   return { state, dispatch, filteredMenu };

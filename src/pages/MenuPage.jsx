@@ -107,22 +107,31 @@ export default function MenuPage() {
         subCategories={state.subCategories}
         selected={state.selectedSubCategory}
         onSelect={(subCategory) =>
-          dispatch({ type: "SET_SUBCATEGORY", subCategory })
+          dispatch({
+            type: "SET_SUBCATEGORY",
+            selectedSubCategory: subCategory,
+          })
         }
       />
 
       {/* Menu grids */}
       <MenuGrid
         items={filteredMenu}
-        onItemClick={(item) => dispatch({ type: "SET_SELECTED_ITEM", item })}
+        onItemClick={(item) =>
+          dispatch({ type: "SET_SELECTED_ITEM", selectedItem: item })
+        }
       />
 
       {/* Menu modals */}
       <MenuItemModal
         item={state.selectedItem}
-        onClose={() => dispatch({ type: "SET_SELECTED_ITEM", item: null })}
+        onClose={() =>
+          dispatch({ type: "SET_SELECTED_ITEM", selectedItem: null })
+        }
         currentIndex={state.currentIndex}
-        setCurrentIndex={(index) => dispatch({ type: "SET_INDEX", index })}
+        setCurrentIndex={(index) =>
+          dispatch({ type: "SET_INDEX", currentIndex: index })
+        }
       />
     </div>
   );
