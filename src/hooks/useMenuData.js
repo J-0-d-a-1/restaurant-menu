@@ -72,4 +72,21 @@ export function useMenuData() {
 
     fetchInitialData();
   }, []);
+
+  // Fetch subcategories when category changes
+  useEffect(() => {
+    if (!state.selectedCategory) return;
+
+    const fetchSub = async () => {
+      const { data } = await supabase
+        .from("subcategories")
+        .select("*")
+        .eq("category_id", state.selectedCategory.id)
+        .order("sort_order");
+
+      dispatch({ type: "SET_SUBCATEGORIES", subCategories: data || [] });
+    };
+
+    fetchSub();
+  }, [state.selectedCategory]);
 }
