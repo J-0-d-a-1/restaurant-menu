@@ -1,3 +1,9 @@
+import { useEffect, useReducer } from "react";
+
+import { supabase } from "../lib/supabase";
+
+import { mapMenuFromDB } from "../utils/menuMapper";
+
 const initialState = {
   menus: [],
   categories: [],
@@ -40,4 +46,30 @@ function reducer(state, action) {
     default:
       return state;
   }
+}
+
+export function useMenuData() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  // Fetch initial categories + menus
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      const [{ data: catData }, { data: menuData }] = await Promise.all([
+        supabase.from("categories").select("*").order("sort_order"),
+        supabase
+          .from("menus")
+          .select("*")
+          .eq("hide", false)
+          .order("sort_order"),
+      ]);
+
+      dispatch({
+        type: "SET_INITIAL_DATA",
+        categories: catData || [],
+        menus: (menuData || []).map(mapMenuFromDB),
+      });
+    };
+
+    fetchInitialData();
+  }, []);
 }
