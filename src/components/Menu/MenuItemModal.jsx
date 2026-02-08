@@ -8,14 +8,18 @@ export default function MenuItemModal({
 }) {
   if (!item) return null;
 
-  const hasMultiple = item.images.length > 1;
+  const images = item.images ?? [];
+  const hasMultiple = images.length > 1;
+  const imageSrc = images[currentIndex] ?? images[0];
 
   const prevImage = () => {
-    setCurrentIndex((prev) => (prev === 0 ? item.images.length - 1 : prev - 1));
+    const next = currentIndex === 0 ? images.length - 1 : currentIndex - 1;
+    setCurrentIndex(next);
   };
 
   const nextImage = () => {
-    setCurrentIndex((prev) => (prev === item.images.length - 1 ? 0 : prev + 1));
+    const next = currentIndex === images.length - 1 ? 0 : currentIndex + 1;
+    setCurrentIndex(next);
   };
 
   return (
@@ -42,8 +46,8 @@ export default function MenuItemModal({
         {/* Image Slider */}
         <div className="relative mb-4">
           <img
-            src={item.images[currentIndex]}
-            alt={`${item.name} ${currentIndex + 1}`}
+            src={imageSrc}
+            alt={`${item.name}`}
             className="w-full h-64 sm:h-72 object-cover rounded-md"
           />
 
