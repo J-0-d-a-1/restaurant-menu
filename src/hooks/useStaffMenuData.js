@@ -5,7 +5,6 @@ import { mapMenuFromDB } from "../utils/menuMapper";
 const initialState = {
   items: [],
   categories: [],
-  allSubCategories: [],
   subCategories: [],
   selectedCategory: null,
   selectedSubCategory: null,
@@ -18,7 +17,6 @@ function reducer(state, action) {
       return {
         ...state,
         categories: action.categories,
-        allSubCategories: action.allSubCategories,
         items: action.items,
         selectedCategory: action.categories[0] ?? null,
       };
@@ -28,9 +26,13 @@ function reducer(state, action) {
         ...state,
         selectedCategory: action.category,
         selectedSubCategory: null,
-        subCategories: state.allSubCategories.filter(
-          (sub) => sub.category_id === action.category.id
-        ),
+        subCategories: [],
+      };
+
+    case "SET_SUBCATEGORIES":
+      return {
+        ...state,
+        subCategories: action.subCategories,
       };
 
     case "SET_SUBCATEGORY":
@@ -69,27 +71,42 @@ function reducer(state, action) {
 export function useStaffMenuData() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // Fetch everything
+  // Fetch initial data
   useEffect(() => {
-    const fetchData = async () => {
-      const [{ data: categories }, { data: subCategories }, { data: menus }] =
-        await Promise.all([
-          supabase.from("categories").select("*").order("sort_order"),
-          supabase.from("subcategories").select("*").order("sort_order"),
-          supabase.from("menus").select("*").order("sort_order"),
-        ]);
+    const fetchInitial = async () => {
+      const [{ data: categories }, { data: menus }] = await Promise.all([
+        supabase.from("categories").select("*").order("sort_order"),
+        supabase.from("menus").select("*").order("sort_order"),
+      ]);
 
       dispatch({
         type: "SET_INITIAL_DATA",
         categories: categories ?? [],
-        subCategories: subCategories ?? [],
         items: (menus ?? []).map(mapMenuFromDB),
       });
     };
 
-    fetchData();
+    fetchInitial();
   }, []);
 
+  // Fetch subcategories when category changes
+  useEffect(() => {
+    if (!state.selectedCategory) return;
+
+    const fetchSub = async () => {
+      const { data } = await supabase
+        .from("subcategories")
+        .select("*")
+        .eq("category_id", state.selectedCategory.id)
+        .order("sort_order");
+
+      dispatch({ type: "SET_SUBCATEGORIES", subCategories: data ?? [] });
+    };
+
+    fetchSub();
+  }, [state.selectedCategory]);
+
+  // filterd menu
   const filteredMenu = state.items.filter((item) => {
     if (state.selectedCategory && item.categoryId !== state.selectedCategory.id)
       return false;
