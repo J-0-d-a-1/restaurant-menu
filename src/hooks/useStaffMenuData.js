@@ -162,5 +162,17 @@ export function useStaffMenuData() {
     dispatch({ type: "DELETE_ITEM", id });
   };
 
-  return { state, dispatch, filteredMenu };
+  // TOGGLE HIDE
+  const toggleHide = async (item) => {
+    const { error } = await supabase
+      .from("menus")
+      .update({ hide: !item.hide })
+      .eq("id", item.id);
+
+    if (error) throw error;
+
+    dispatch({ type: "UPSERT_ITEM", item: { ...item, hide: !item.hide } });
+  };
+
+  return { state, dispatch, filteredMenu, saveItem, deleteItem, toggleHide };
 }
