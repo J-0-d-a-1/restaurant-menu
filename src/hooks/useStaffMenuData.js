@@ -120,5 +120,33 @@ export function useStaffMenuData() {
     return true;
   });
 
+  // ADD or UPDATE
+  const saveItem = async (item) => {
+    if (item.id) {
+      const { error } = await supabase
+        .from("menus")
+        .update(item)
+        .eq("id", item.id);
+
+      if (error) throw error;
+
+      dispatch({ type: "UPSERT_ITEM", item });
+    } else {
+      const { data, error } = await supabase
+        .from("menus")
+        .insert(item)
+        .select();
+
+      if (error) throw error;
+
+      dispatch({
+        type: "UPSERT_ITEM",
+        item: mapMenuFromDB(data[0]),
+      });
+    }
+
+    dispatch({ type: "SET_EDITING_ITEM", item: null });
+  };
+
   return { state, dispatch, filteredMenu };
 }
