@@ -148,5 +148,19 @@ export function useStaffMenuData() {
     dispatch({ type: "SET_EDITING_ITEM", item: null });
   };
 
+  // DELETE
+  const deleteItem = async (id) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this item?"
+    );
+    if (!confirmed) return;
+
+    const { error } = await supabase.from("menus").delete().eq("id", id);
+
+    if (error) throw error;
+
+    dispatch({ type: "DELETE_ITEM", id });
+  };
+
   return { state, dispatch, filteredMenu };
 }
