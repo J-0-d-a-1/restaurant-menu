@@ -14,7 +14,8 @@ import SubCategoryTabs from "../components/Menu/SubCategoryTabs";
 
 export default function StaffPage() {
   const { user, loading } = useAuth();
-  const { state, dispatch, filteredMenu } = useStaffMenuData();
+  const { state, dispatch, filteredMenu, saveMenu, deleteMenu, toggleHide } =
+    useStaffMenuData();
 
   // const [items, setItems] = useState([]);
   // const [editingItem, setEditingItem] = useState(null);
@@ -205,8 +206,8 @@ export default function StaffPage() {
             key={item.id}
             item={item}
             onEdit={() => dispatch({ type: "SET_EDITING_ITEM", item })}
-            // onToggleHide={() => handleToggleHide(item.id, item.hide)}
-            // onDelete={() => handleDelete(item.id)}
+            onDelete={() => deleteMenu(item.id)}
+            onToggleHide={() => toggleHide(item)}
           />
         ))}
       </div>
@@ -217,12 +218,12 @@ export default function StaffPage() {
           <div className="bg-white w-full max-w-md rounded-xl p-4">
             <StaffMenuForm
               categories={state.categories}
-              allSubCategories={state.allSubCategories}
+              allSubCategories={state.subCategories}
               item={state.editingItem}
+              onSave={saveMenu}
               onCancel={() =>
                 dispatch({ type: "SET_EDITING_ITEM", item: null })
               }
-              // onSave={handleSave}
             />
           </div>
         </div>

@@ -1,9 +1,9 @@
 import { useEffect, useReducer } from "react";
 import { supabase } from "../lib/supabase";
-import { mapMenuFromDB } from "../utils/menuMapper";
+import { mapMenuFromDB, mapMenuToDB } from "../utils/menuMapper";
 
 const initialState = {
-  items: [],
+  menus: [],
   categories: [],
   subCategories: [],
   selectedCategory: null,
@@ -17,7 +17,7 @@ function reducer(state, action) {
       return {
         ...state,
         categories: action.categories,
-        items: action.items,
+        menus: action.menus,
         selectedCategory: action.categories[0] ?? null,
       };
 
@@ -47,20 +47,24 @@ function reducer(state, action) {
         editingItem: action.item,
       };
 
-    case "UPSERT_ITEM":
+    case "ADD_MENU":
       return {
         ...state,
-        items: state.items.some((item) => item.id === action.item.id)
-          ? state.items.map((item) =>
-              item.id === action.item.id ? action.item : item
-            )
-          : [...state.items, action.item],
+        menus: [...state.menus, action.menu],
       };
 
-    case "DELETE_ITEM":
+    case "UPDATE_MENU":
       return {
         ...state,
-        items: state.items.filter((item) => item.id !== action.id),
+        menus: state.menus.map((menu) =>
+          menu.id === action.menu.id ? action.menu : menu
+        ),
+      };
+
+    case "DELETE_MENU":
+      return {
+        ...state,
+        menus: state.menus.filter((menu) => menu.id !== action.id),
       };
 
     default:
@@ -73,20 +77,20 @@ export function useStaffMenuData() {
 
   // Fetch initial data
   useEffect(() => {
-    const fetchInitial = async () => {
-      const [{ data: categories }, { data: menus }] = await Promise.all([
+    const fetchInitialData = async () => {
+      const [{ data: catData }, { data: menuData }] = await Promise.all([
         supabase.from("categories").select("*").order("sort_order"),
         supabase.from("menus").select("*").order("sort_order"),
       ]);
 
       dispatch({
         type: "SET_INITIAL_DATA",
-        categories: categories ?? [],
-        items: (menus ?? []).map(mapMenuFromDB),
+        categories: catData || [],
+        menus: (menuData || []).map(mapMenuFromDB),
       });
     };
 
-    fetchInitial();
+    fetchInitialData();
   }, []);
 
   // Fetch subcategories when category changes
@@ -100,56 +104,57 @@ export function useStaffMenuData() {
         .eq("category_id", state.selectedCategory.id)
         .order("sort_order");
 
-      dispatch({ type: "SET_SUBCATEGORIES", subCategories: data ?? [] });
+      dispatch({ type: "SET_SUBCATEGORIES", subCategories: data || [] });
     };
 
     fetchSub();
   }, [state.selectedCategory]);
 
   // filterd menu
-  const filteredMenu = state.items.filter((item) => {
-    if (state.selectedCategory && item.categoryId !== state.selectedCategory.id)
-      return false;
+  const filteredMenu = state.menus.filter((item) => {
+    const matchCategory = item.categoryId === state.selectedCategory?.id;
 
-    if (
-      state.selectedSubCategory &&
-      item.subCategoryId !== state.selectedSubCategory.id
-    )
-      return false;
+    const matchSubCategory =
+      state.selectedSubCategory === null ||
+      item.subCategoryId === state.selectedSubCategory?.id;
 
-    return true;
+    return matchCategory && matchSubCategory;
   });
 
   // ADD or UPDATE
-  const saveItem = async (item) => {
+  const saveMenu = async (item) => {
+    const dbItem = mapMenuToDB(item);
+
+    let query;
+
     if (item.id) {
-      const { error } = await supabase
+      query = supabase
         .from("menus")
-        .update(item)
-        .eq("id", item.id);
-
-      if (error) throw error;
-
-      dispatch({ type: "UPSERT_ITEM", item });
+        .update(dbItem)
+        .eq("id", item.id)
+        .select()
+        .single();
     } else {
-      const { data, error } = await supabase
-        .from("menus")
-        .insert(item)
-        .select();
+      query = supabase.from("menus").insert(dbItem).select().single();
+    }
 
-      if (error) throw error;
+    const { data, error } = await query;
 
-      dispatch({
-        type: "UPSERT_ITEM",
-        item: mapMenuFromDB(data[0]),
-      });
+    if (error) throw error;
+
+    const mapped = mapMenuFromDB(data);
+
+    if (item.id) {
+      dispatch({ type: "UPDATE_MENU", menu: mapped });
+    } else {
+      dispatch({ type: "ADD_MENU", menu: mapped });
     }
 
     dispatch({ type: "SET_EDITING_ITEM", item: null });
   };
 
   // DELETE
-  const deleteItem = async (id) => {
+  const deleteMenu = async (id) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this item?"
     );
@@ -159,7 +164,7 @@ export function useStaffMenuData() {
 
     if (error) throw error;
 
-    dispatch({ type: "DELETE_ITEM", id });
+    dispatch({ type: "DELETE_MENU", id });
   };
 
   // TOGGLE HIDE
@@ -171,8 +176,8 @@ export function useStaffMenuData() {
 
     if (error) throw error;
 
-    dispatch({ type: "UPSERT_ITEM", item: { ...item, hide: !item.hide } });
+    dispatch({ type: "UPDATE_MENU", menu: { ...item, hide: !item.hide } });
   };
 
-  return { state, dispatch, filteredMenu, saveItem, deleteItem, toggleHide };
+  return { state, dispatch, filteredMenu, saveMenu, deleteMenu, toggleHide };
 }
