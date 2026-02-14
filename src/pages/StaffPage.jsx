@@ -1,9 +1,3 @@
-// import { supabase } from "../lib/supabase";
-
-// import { useEffect, useState } from "react";
-
-// import { mapMenuFromDB, mapMenuToDB } from "../utils/menuMapper";
-
 import { useAuth } from "../hooks/useAuth";
 import { useStaffMenuData } from "../hooks/useStaffMenuData";
 
@@ -17,59 +11,6 @@ export default function StaffPage() {
   const { state, dispatch, filteredMenu, saveMenu, deleteMenu, toggleHide } =
     useStaffMenuData();
 
-  // const [items, setItems] = useState([]);
-  // const [editingItem, setEditingItem] = useState(null);
-  // const [categories, setCategories] = useState([]);
-  // const [selectedCategory, setSelectedCategory] = useState(null);
-  // const [allSubCategories, setAllSubCategories] = useState([]);
-  // const [subCategories, setSubCategories] = useState([]);
-  // const [selectedSubCategory, setSelectedSubCategpry] = useState(null);
-
-  // // fetching Menus from supabase
-  // useEffect(() => {
-  //   const fetchInitialData = async () => {
-  //     const [
-  //       { data: catData, error: catError },
-  //       { data: subData, error: subError },
-  //       { data: menuData, error: menuError },
-  //     ] = await Promise.all([
-  //       supabase.from("categories").select("*").order("sort_order"),
-  //       supabase.from("subcategories").select("*").order("sort_order"),
-  //       supabase.from("menus").select("*").order("sort_order"),
-  //     ]);
-
-  //     if (catError || subError || menuError) {
-  //       console.error(catError || subError || menuError);
-  //       return;
-  //     }
-
-  //     // setting category from DB
-  //     setCategories(catData);
-  //     // setting all subcategory from DB
-  //     setAllSubCategories(subData);
-  //     // setting menu from DB
-  //     setItems(menuData.map(mapMenuFromDB));
-
-  //     if (catData.length > 0) {
-  //       setSelectedCategory(catData[0]);
-  //     }
-  //   };
-
-  //   fetchInitialData();
-  // }, []);
-
-  // // update subcategories when category changes
-  // useEffect(() => {
-  //   if (!selectedCategory) return;
-
-  //   const filtered = allSubCategories.filter(
-  //     (sub) => sub.category_id === selectedCategory.id
-  //   );
-
-  //   setSubCategories(filtered);
-  //   setSelectedSubCategpry(null);
-  // }, [selectedCategory, allSubCategories]);
-
   // loading
   if (loading) return <p>Loading...</p>;
 
@@ -82,94 +23,6 @@ export default function StaffPage() {
       </div>
     );
   }
-
-  // const filteredMenu = items.filter((item) => {
-  //   // category filter
-  //   if (selectedCategory && item.categoryId !== selectedCategory.id) {
-  //     return false;
-  //   }
-
-  //   // subcategory filter
-  //   if (selectedSubCategory && item.subCategoryId !== selectedSubCategory.id) {
-  //     return false;
-  //   }
-
-  //   return true;
-  // });
-
-  // const handleSave = async (newItem) => {
-  //   if (editingItem?.id) {
-  //     // update existing
-  //     const { error } = await supabase
-  //       .from("menus")
-  //       .update(mapMenuToDB(newItem))
-  //       .eq("id", editingItem.id);
-
-  //     if (error) {
-  //       console.error(error);
-  //       return;
-  //     }
-
-  //     setItems((prev) =>
-  //       prev.map((item) => {
-  //         return item.id === editingItem.id ? { ...item, ...newItem } : item;
-  //       })
-  //     );
-  //   } else {
-  //     // Add New
-  //     const { data, error } = await supabase
-  //       .from("menus")
-  //       .insert([mapMenuToDB(newItem)])
-  //       .select();
-
-  //     if (error) {
-  //       console.error(error);
-  //       return;
-  //     }
-
-  //     setItems((prev) => [...prev, mapMenuFromDB(data[0])]);
-  //   }
-
-  //   // Reset form
-  //   setEditingItem(null);
-  // };
-
-  // const handleDelete = async (id) => {
-  //   const userConfirmed = window.confirm(
-  //     "Are you sure you want to delete this item?"
-  //   );
-
-  //   if (!userConfirmed) return;
-
-  //   const { error } = await supabase.from("menus").delete().eq("id", id);
-
-  //   if (error) {
-  //     console.error("Delete failed:", error.message);
-  //     alert("Failed to delete menu.");
-  //     return;
-  //   }
-
-  //   // Update UI after deleted
-  //   setItems((prev) => prev.filter((item) => item.id !== id));
-  // };
-
-  // const handleToggleHide = async (id, currentHide) => {
-  //   const { error } = await supabase
-  //     .from("menus")
-  //     .update({ hide: !currentHide })
-  //     .eq("id", id);
-
-  //   if (error) {
-  //     console.error(error);
-  //     return;
-  //   }
-
-  //   setItems((prev) =>
-  //     prev.map((item) =>
-  //       item.id === id ? { ...item, hide: !currentHide } : item
-  //     )
-  //   );
-  // };
 
   return (
     <div className="min-h-screen p-2 bg-gray-100">
