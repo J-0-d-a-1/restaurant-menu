@@ -7,17 +7,33 @@ export default function StaffItemCard({
   onDelete,
 }) {
   return (
-    <div className="bg-white rounded-lg p-4 shadow-sm border relative">
+    <div
+      className={`bg-white rounded-lg p-4 shadow-sm border relative transition
+      ${item.hide ? "opacity-70" : ""}
+      `}
+    >
       {item.soldOut && <SoldOutBadge />}
 
+      {/* overlay layer */}
+      {item.hide && (
+        <div className="absolute inset-0 bg-gray-400 bg-opacity-40 rounded-lg z-10 pointer-events-none"></div>
+      )}
+
       {/* Toggle for hide */}
-      <label className="absolute z-50 top-2 right-2">
+      <label className="absolute z-50 top-2 right-2 cursor-pointer">
         <input
           type="checkbox"
           checked={!item.hide}
-          onChange={() => onToggleHide(item.id)}
+          onChange={() => onToggleHide(item)}
+          className="sr-only peer"
         />
-        <span className="text-xs ml-1">{item.hide ? "Hidden" : "Visible"}</span>
+
+        <div className="w-12 h-6 bg-gray-300 rounded-full peer-checked:bg-green-600 transition-colors ease-in-out duration-200 relative"></div>
+        <div className="absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow-md transition-transform ease-in-out duration-200 peer-checked:translate-x-6"></div>
+
+        <span className="block text-xs text-white mt-1 text-center bg-black bg-opacity-60 rounded px-2">
+          {item.hide ? "Hidden" : "Visible"}
+        </span>
       </label>
 
       <img
