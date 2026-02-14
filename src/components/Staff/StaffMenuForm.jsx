@@ -1,13 +1,13 @@
 import { supabase } from "../../lib/supabase";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SubCategorySelect from "./SubCategorySelect";
 import ImageUploadPreview from "./ImageUploadPreview";
 import CategorySelect from "./CategorySelect";
 
 export default function StaffMenuForm({
-  categories,
-  allSubCategories,
+  categories = [],
+  allSubCategories = [],
   item,
   onSave,
   onCancel,
@@ -22,7 +22,6 @@ export default function StaffMenuForm({
     soldOut: false,
     hide: false,
   });
-  const isInitializing = useRef(true);
 
   const [images, setImages] = useState([]);
 
@@ -35,21 +34,9 @@ export default function StaffMenuForm({
     );
   }, [form.category, allSubCategories]);
 
-  // reset subcategories when category changed
-  useEffect(() => {
-    if (isInitializing.current) return;
-
-    setForm((prev) => ({
-      ...prev,
-      subCategory: null,
-    }));
-  }, [form.category]);
-
   // Whenever the editing item changes, update the form
   useEffect(() => {
     if (!item) {
-      isInitializing.current = false;
-
       setForm({
         name: "",
         category: null,
@@ -68,11 +55,9 @@ export default function StaffMenuForm({
       (category) => category.id === item.categoryId
     );
 
-    const selectedSubCategory = allSubCategories.find(
+    const selectedSubCategory = allSubCategories?.find(
       (subCategory) => subCategory.id === item.subCategoryId
     );
-
-    isInitializing.current = true;
 
     setForm({
       name: item.name ?? "",
@@ -89,12 +74,7 @@ export default function StaffMenuForm({
         ? item.images.map((url) => ({ preview: url })) // load existing image URLs
         : []
     );
-
-    // allow future category changes to reset subcategory
-    setTimeout(() => {
-      isInitializing.current = false;
-    }, 0);
-  }, [item, categories, allSubCategories]);
+  }, [item?.id]);
 
   const updateField = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -132,6 +112,7 @@ export default function StaffMenuForm({
       }
 
       onSave({
+        id: item?.id,
         name: form.name,
         categoryId: form.category?.id ?? null,
         subCategoryId: form.subCategory?.id ?? null,
@@ -170,7 +151,13 @@ export default function StaffMenuForm({
       <CategorySelect
         categories={categories}
         value={form.category}
-        onChange={(value) => updateField("category", value)}
+        onChange={(value) =>
+          setForm((prev) => ({
+            ...prev,
+            category: value,
+            subCategory: null,
+          }))
+        }
       />
 
       {/* SubCategory */}
