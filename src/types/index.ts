@@ -36,9 +36,3 @@ export interface SubCategory {
   name: string;
   category_id: string;
 }
-
-// Supabase User
-export interface AuthUser {
-  id: string;
-  email: string | undefined;
-}
