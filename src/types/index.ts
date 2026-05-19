@@ -11,35 +11,34 @@ export interface MenuItemDB {
   images: string[] | null;
 }
 
-
 // App shape (what components use)
 export interface MenuItem {
-  id: string
-  name: string
-  categoryId: string
-  subCategoryId: string | null
-  description: string | null
-  price: number
-  soldOut: boolean
-  hide: boolean
-  images: string[] | null
+  id: string;
+  name: string;
+  categoryId: string;
+  subCategoryId: string | null;
+  description: string | null;
+  price: number;
+  soldOut: boolean;
+  hide: boolean;
+  images: string[] | null;
 }
 
 // Category shape
 export interface Category {
-  id: string
-  name: string
+  id: string;
+  name: string;
 }
 
 // SubCategory shape
 export interface SubCategory {
-  id: string
-  name: string
-  category_id: string
+  id: string;
+  name: string;
+  category_id: string;
 }
 
 // Supabase User
 export interface AuthUser {
-  id: string
-  email: string || undefined
+  id: string;
+  email: string | undefined;
 }
