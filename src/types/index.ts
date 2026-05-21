@@ -28,6 +28,7 @@ export interface MenuItem {
 export interface Category {
   id: string;
   name: string;
+  sort_order: number;
 }
 
 // SubCategory shape
@@ -35,4 +36,5 @@ export interface SubCategory {
   id: string;
   name: string;
   category_id: string;
+  sort_order: number;
 }

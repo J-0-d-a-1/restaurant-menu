@@ -1,10 +1,30 @@
 import { useEffect, useReducer } from "react";
-
 import { supabase } from "../lib/supabase";
-
 import { mapMenuFromDB } from "../utils/menuMapper";
+import { Category, MenuItem, SubCategory } from "../types";
 
-const initialState = {
+// Type the state
+interface MenuState {
+  menus: MenuItem[];
+  categories: Category[];
+  subCategories: SubCategory[];
+  selectedCategory: Category | null;
+  selectedSubCategory: SubCategory | null;
+  selectedItem: MenuItem | null;
+  currentIndex: number;
+}
+
+// Type each action
+type MenuAction =
+  | { type: "SET_INITIAL_DATA"; categories: Category[]; menus: MenuItem[] }
+  | { type: "SET_CATEGORY"; category: Category }
+  | { type: "SET_SUBCATEGORIES"; subCategories: SubCategory[] }
+  | { type: "SET_SUBCATEGORY"; selectedSubCategory: SubCategory }
+  | { type: "SET_SELECTED_ITEM"; selectedItem: MenuItem }
+  | { type: "SET_INDEX"; currentIndex: number };
+
+// Type the initial state
+const initialState: MenuState = {
   menus: [],
   categories: [],
   subCategories: [],
@@ -14,7 +34,8 @@ const initialState = {
   currentIndex: 0,
 };
 
-function reducer(state, action) {
+// Type the reducer
+function reducer(state: MenuState, action: MenuAction): MenuState {
   switch (action.type) {
     case "SET_INITIAL_DATA":
       return {
@@ -49,12 +70,19 @@ function reducer(state, action) {
   }
 }
 
-export function useMenuData() {
+// Type the hook return
+interface UseMenuDataReturn {
+  state: MenuState;
+  dispatch: React.Dispatch<MenuAction>;
+  filteredMenu: MenuItem[];
+}
+
+export function useMenuData(): UseMenuDataReturn {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   // Fetch initial categories + menus
   useEffect(() => {
-    const fetchInitialData = async () => {
+    const fetchInitialData = async (): Promise<void> => {
       const [{ data: catData }, { data: menuData }] = await Promise.all([
         supabase.from("categories").select("*").order("sort_order"),
         supabase
@@ -66,8 +94,8 @@ export function useMenuData() {
 
       dispatch({
         type: "SET_INITIAL_DATA",
-        categories: catData || [],
-        menus: (menuData || []).map(mapMenuFromDB),
+        categories: (catData as Category[]) || [],
+        menus: ((menuData || []) as any[]).map(mapMenuFromDB),
       });
     };
 
@@ -78,21 +106,24 @@ export function useMenuData() {
   useEffect(() => {
     if (!state.selectedCategory) return;
 
-    const fetchSub = async () => {
+    const fetchSub = async (): Promise<void> => {
       const { data } = await supabase
         .from("subcategories")
         .select("*")
-        .eq("category_id", state.selectedCategory.id)
+        .eq("category_id", state.selectedCategory!.id)
         .order("sort_order");
 
-      dispatch({ type: "SET_SUBCATEGORIES", subCategories: data || [] });
+      dispatch({
+        type: "SET_SUBCATEGORIES",
+        subCategories: (data as SubCategory[]) || [],
+      });
     };
 
     fetchSub();
   }, [state.selectedCategory]);
 
   // Filtered menu
-  const filteredMenu = state.menus.filter((item) => {
+  const filteredMenu: MenuItem[] = state.menus.filter((item: MenuItem) => {
     const matchCategory = item.categoryId === state.selectedCategory?.id;
 
     const matchSubCategory =
