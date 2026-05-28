@@ -1,8 +1,35 @@
 import { useEffect, useReducer } from "react";
 import { supabase } from "../lib/supabase";
 import { mapMenuFromDB, mapMenuToDB } from "../utils/menuMapper";
+import { Category, MenuItem, SubCategory } from "../types";
 
-const initialState = {
+// Type the state
+interface MenuState {
+  menus: MenuItem[];
+  categories: Category[];
+  subCategories: SubCategory[];
+  selectedCategory: Category | null;
+  selectedSubCategory: SubCategory | null;
+  editingItem: MenuItem | null;
+}
+
+// Type eact action
+type StaffMenuAction =
+  | {
+      type: "SET_INITIAL_DATA";
+      categories: Category[];
+      menus: MenuItem[];
+    }
+  | { type: "SET_CATEGORY"; category: Category }
+  | { type: "SET_SUBCATEGORIES"; subCategories: SubCategory[] }
+  | { type: "SET_SUBCATEGORY"; subCategory: SubCategory }
+  | { type: "SET_EDITING_ITEM"; item: MenuItem | null }
+  | { type: "ADD_MENU"; menu: MenuItem }
+  | { type: "UPDATE_MENU"; menu: MenuItem }
+  | { type: "DELETE_MENU"; id: string };
+
+// Type the initial state
+const initialState: MenuState = {
   menus: [],
   categories: [],
   subCategories: [],
@@ -11,7 +38,7 @@ const initialState = {
   editingItem: null,
 };
 
-function reducer(state, action) {
+function reducer(state: MenuState, action: StaffMenuAction) {
   switch (action.type) {
     case "SET_INITIAL_DATA":
       return {
@@ -57,7 +84,7 @@ function reducer(state, action) {
       return {
         ...state,
         menus: state.menus.map((menu) =>
-          menu.id === action.menu.id ? action.menu : menu
+          menu.id === action.menu.id ? action.menu : menu,
         ),
       };
 
@@ -72,7 +99,17 @@ function reducer(state, action) {
   }
 }
 
-export function useStaffMenuData() {
+// Type the hook return
+interface UseStaffMenuDataReturn {
+  state: MenuState;
+  dispatch: React.Dispatch<StaffMenuAction>;
+  filteredMenu: MenuItem[];
+  saveMenu: (item: MenuItem) => Promise<void>;
+  deleteMenu: (id: string) => Promise<void>;
+  toggleHide: (item: MenuItem) => Promise<void>;
+}
+
+export function useStaffMenuData(): UseStaffMenuDataReturn {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   // Fetch initial data
@@ -101,7 +138,7 @@ export function useStaffMenuData() {
       const { data } = await supabase
         .from("subcategories")
         .select("*")
-        .eq("category_id", state.selectedCategory.id)
+        .eq("category_id", state.selectedCategory!.id)
         .order("sort_order");
 
       dispatch({ type: "SET_SUBCATEGORIES", subCategories: data || [] });
@@ -122,7 +159,7 @@ export function useStaffMenuData() {
   });
 
   // ADD or UPDATE
-  const saveMenu = async (item) => {
+  const saveMenu = async (item: MenuItem): Promise<void> => {
     const dbItem = mapMenuToDB(item);
 
     let query;
@@ -154,9 +191,9 @@ export function useStaffMenuData() {
   };
 
   // DELETE
-  const deleteMenu = async (id) => {
+  const deleteMenu = async (id: string): Promise<void> => {
     const confirmed = window.confirm(
-      "Are you sure you want to delete this item?"
+      "Are you sure you want to delete this item?",
     );
     if (!confirmed) return;
 
@@ -168,7 +205,7 @@ export function useStaffMenuData() {
   };
 
   // TOGGLE HIDE
-  const toggleHide = async (item) => {
+  const toggleHide = async (item: MenuItem): Promise<void> => {
     const { error } = await supabase
       .from("menus")
       .update({ hide: !item.hide })
