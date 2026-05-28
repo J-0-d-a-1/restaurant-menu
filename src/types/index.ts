@@ -38,3 +38,9 @@ export interface SubCategory {
   category_id: string;
   sort_order: number;
 }
+
+// ImagePreview shape
+export interface ImagePreview {
+  file?: File;
+  preview: string;
+}
