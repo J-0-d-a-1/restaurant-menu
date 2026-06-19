@@ -1,11 +1,19 @@
+import type { MenuItem } from "../../types";
 import SoldOutBadge from "./SoldOutBadge";
+
+interface MenuItemModalProps {
+  item: MenuItem | null;
+  onClose: () => void;
+  currentIndex: number;
+  setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
+}
 
 export default function MenuItemModal({
   item,
   onClose,
   currentIndex,
   setCurrentIndex,
-}) {
+}: MenuItemModalProps) {
   if (!item) return null;
 
   const images = item.images ?? [];
@@ -72,7 +80,7 @@ export default function MenuItemModal({
           {/* Dots navigation */}
           {hasMultiple && (
             <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1">
-              {item.images.map((_, idx) => (
+              {images.map((_, idx) => (
                 <span
                   key={idx}
                   className={`w-2 h-2 rounded-full ${
