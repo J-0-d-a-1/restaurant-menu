@@ -1,11 +1,19 @@
+import type { MenuItem } from "../../types";
 import SoldOutBadge from "../Menu/SoldOutBadge";
+
+interface StaffItemCardProps {
+  item: MenuItem;
+  onToggleHide: (item: MenuItem) => void;
+  onEdit: () => void;
+  onDelete: () => void;
+}
 
 export default function StaffItemCard({
   item,
   onToggleHide,
   onEdit,
   onDelete,
-}) {
+}: StaffItemCardProps) {
   return (
     <div
       className={`bg-white rounded-lg p-4 shadow-sm border relative transition
@@ -37,15 +45,15 @@ export default function StaffItemCard({
       </label>
 
       <img
-        src={item.images[0]}
+        src={item.images?.[0]}
         alt={item.name}
         className="w-full h-40 object-cover rounded-md mb-3"
       />
       <h2 className="font-bold text-lg">{item.name}</h2>
-      <p className="text-sm text-gray-600">{item.category}</p>
+      <p className="text-sm text-gray-600">{item.categoryId}</p>
 
-      {item.subCategory && (
-        <p className="text-xs text-gray-500">{item.subCategory}</p>
+      {item.subCategoryId && (
+        <p className="text-xs text-gray-500">{item.subCategoryId}</p>
       )}
 
       <p className="mt-2 font-semibold">${item.price}</p>
