@@ -45,11 +45,13 @@ export default function StaffItemCard({
       </label>
 
       <img
-        src={item.images?.[0]}
+        src={item.images?.[0] ?? ""}
         alt={item.name}
         className="w-full h-40 object-cover rounded-md mb-3"
       />
       <h2 className="font-bold text-lg">{item.name}</h2>
+      {/* TODO: Currently showing categoryId/subCategoryId instead of names.
+          Need to resolve names via Category/SubCategory look up before passing to this component. */}
       <p className="text-sm text-gray-600">{item.categoryId}</p>
 
       {item.subCategoryId && (
