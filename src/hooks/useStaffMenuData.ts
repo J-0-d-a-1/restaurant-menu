@@ -22,7 +22,7 @@ type StaffMenuAction =
     }
   | { type: "SET_CATEGORY"; category: Category }
   | { type: "SET_SUBCATEGORIES"; subCategories: SubCategory[] }
-  | { type: "SET_SUBCATEGORY"; subCategory: SubCategory }
+  | { type: "SET_SUBCATEGORY"; subCategory: SubCategory | null }
   | { type: "SET_EDITING_ITEM"; item: MenuItem | null }
   | { type: "ADD_MENU"; menu: MenuItem }
   | { type: "UPDATE_MENU"; menu: MenuItem }
@@ -104,7 +104,7 @@ interface UseStaffMenuDataReturn {
   state: MenuState;
   dispatch: React.Dispatch<StaffMenuAction>;
   filteredMenu: MenuItem[];
-  saveMenu: (item: MenuItem) => Promise<void>;
+  saveMenu: (item: Omit<MenuItem, "id"> & { id?: string }) => Promise<void>;
   deleteMenu: (id: string) => Promise<void>;
   toggleHide: (item: MenuItem) => Promise<void>;
 }
@@ -159,8 +159,10 @@ export function useStaffMenuData(): UseStaffMenuDataReturn {
   });
 
   // ADD or UPDATE
-  const saveMenu = async (item: MenuItem): Promise<void> => {
-    const dbItem = mapMenuToDB(item);
+  const saveMenu = async (
+    item: Omit<MenuItem, "id"> & { id?: string },
+  ): Promise<void> => {
+    const dbItem = mapMenuToDB(item as MenuItem);
 
     let query;
 

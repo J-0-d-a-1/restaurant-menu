@@ -27,7 +27,7 @@ interface StaffMenuFormProps {
   categories?: Category[];
   allSubCategories?: SubCategory[];
   item: MenuItem | null;
-  onSave: (item: Omit<MenuItem, "id"> & { id?: string }) => void;
+  onSave: (item: Omit<MenuItem, "id"> & { id?: string }) => Promise<void>;
   onCancel: () => void;
 }
 
