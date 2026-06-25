@@ -5,14 +5,40 @@ import SubCategorySelect from "./SubCategorySelect";
 import ImageUploadPreview from "./ImageUploadPreview";
 import CategorySelect from "./CategorySelect";
 
+import type {
+  Category,
+  ImagePreview,
+  MenuItem,
+  SubCategory,
+} from "../../types";
+
+interface FormState {
+  name: string;
+  category: Category | null;
+  subCategory: SubCategory | null;
+  description: string;
+  price: number | string;
+  images: ImagePreview[];
+  soldOut: boolean;
+  hide: boolean;
+}
+
+interface StaffMenuFormProps {
+  categories?: Category[];
+  allSubCategories?: SubCategory[];
+  item: MenuItem | null;
+  onSave: (item: Omit<MenuItem, "id"> & { id?: string }) => void;
+  onCancel: () => void;
+}
+
 export default function StaffMenuForm({
   categories = [],
   allSubCategories = [],
   item,
   onSave,
   onCancel,
-}) {
-  const [form, setForm] = useState({
+}: StaffMenuFormProps) {
+  const [form, setForm] = useState<FormState>({
     name: "",
     category: null,
     subCategory: null,
@@ -23,14 +49,14 @@ export default function StaffMenuForm({
     hide: false,
   });
 
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState<ImagePreview[]>([]);
 
   // filter subcategories
   const filteredSubCategories = useMemo(() => {
     if (!form.category) return [];
 
     return allSubCategories.filter(
-      (subcategory) => subcategory.category_id === form.category.id
+      (subcategory) => subcategory.category_id === form.category!.id,
     );
   }, [form.category, allSubCategories]);
 
@@ -52,11 +78,11 @@ export default function StaffMenuForm({
     }
 
     const selectedCategory = categories.find(
-      (category) => category.id === item.categoryId
+      (category) => category.id === item.categoryId,
     );
 
     const selectedSubCategory = allSubCategories?.find(
-      (subCategory) => subCategory.id === item.subCategoryId
+      (subCategory) => subCategory.id === item.subCategoryId,
     );
 
     setForm({
@@ -67,21 +93,22 @@ export default function StaffMenuForm({
       price: item.price ?? "",
       soldOut: item.soldOut ?? false,
       hide: item.hide ?? false,
+      images: [],
     }); // load existing values
 
     setImages(
       Array.isArray(item.images)
         ? item.images.map((url) => ({ preview: url })) // load existing image URLs
-        : []
+        : [],
     );
   }, [item?.id]);
 
-  const updateField = (field, value) => {
+  const updateField = (field: keyof FormState, value: unknown): void => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
   // Uploading images
-  const uploadImage = async (file) => {
+  const uploadImage = async (file: File): Promise<string> => {
     const fileName = `${crypto.randomUUID()}-${file.name}`;
 
     const { error } = await supabase.storage
@@ -94,7 +121,9 @@ export default function StaffMenuForm({
       .publicUrl;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ): Promise<void> => {
     e.preventDefault();
 
     try {
@@ -117,7 +146,7 @@ export default function StaffMenuForm({
         categoryId: form.category?.id ?? null,
         subCategoryId: form.subCategory?.id ?? null,
         description: form.description,
-        price: form.price,
+        price: Number(form.price),
         soldOut: form.soldOut,
         hide: form.hide,
         images: finalImages,
@@ -154,7 +183,7 @@ export default function StaffMenuForm({
         onChange={(value) =>
           setForm((prev) => ({
             ...prev,
-            category: value,
+            category: value ?? null,
             subCategory: null,
           }))
         }

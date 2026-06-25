@@ -15,7 +15,7 @@ export interface MenuItemDB {
 export interface MenuItem {
   id: string;
   name: string;
-  categoryId: string;
+  categoryId: string | null;
   subCategoryId: string | null;
   description: string | null;
   price: number;
