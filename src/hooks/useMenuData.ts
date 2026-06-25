@@ -19,8 +19,8 @@ type MenuAction =
   | { type: "SET_INITIAL_DATA"; categories: Category[]; menus: MenuItem[] }
   | { type: "SET_CATEGORY"; category: Category }
   | { type: "SET_SUBCATEGORIES"; subCategories: SubCategory[] }
-  | { type: "SET_SUBCATEGORY"; selectedSubCategory: SubCategory }
-  | { type: "SET_SELECTED_ITEM"; selectedItem: MenuItem }
+  | { type: "SET_SUBCATEGORY"; selectedSubCategory: SubCategory | null }
+  | { type: "SET_SELECTED_ITEM"; selectedItem: MenuItem | null }
   | { type: "SET_INDEX"; currentIndex: number };
 
 // Type the initial state

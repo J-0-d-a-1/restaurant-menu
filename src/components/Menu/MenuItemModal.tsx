@@ -5,7 +5,7 @@ interface MenuItemModalProps {
   item: MenuItem | null;
   onClose: () => void;
   currentIndex: number;
-  setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
+  setCurrentIndex: (index: number) => void;
 }
 
 export default function MenuItemModal({
