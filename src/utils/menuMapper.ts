@@ -1,5 +1,7 @@
+import { MenuItem, MenuItemDB } from "../types";
+
 // DB -> App
-export const mapMenuFromDB = (row) => ({
+export const mapMenuFromDB = (row: MenuItemDB): MenuItem => ({
   id: row.id,
   name: row.name,
   categoryId: row.category_id,
@@ -12,7 +14,7 @@ export const mapMenuFromDB = (row) => ({
 });
 
 // App -> DB
-export const mapMenuToDB = (item) => ({
+export const mapMenuToDB = (item: MenuItem): Omit<MenuItemDB, "id"> => ({
   name: item.name,
   category_id: item.categoryId,
   subcategory_id: item.subCategoryId,

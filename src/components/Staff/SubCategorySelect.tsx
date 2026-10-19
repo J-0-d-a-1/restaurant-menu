@@ -1,4 +1,16 @@
-export default function SubCategorySelect({ subCategories, value, onChange }) {
+import type { SubCategory } from "../../types";
+
+interface SubCategorySelectProps {
+  subCategories: SubCategory[];
+  value: SubCategory | null;
+  onChange: (subCategory: SubCategory | null) => void;
+}
+
+export default function SubCategorySelect({
+  subCategories,
+  value,
+  onChange,
+}: SubCategorySelectProps) {
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
@@ -6,9 +18,9 @@ export default function SubCategorySelect({ subCategories, value, onChange }) {
         <select
           className="w-full border rounded p-2"
           value={value?.id ?? ""}
-          onChange={(e) => {
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
             const selected = subCategories.find(
-              (subCategory) => subCategory.id === e.target.value
+              (subCategory) => subCategory.id === e.target.value,
             );
             onChange(selected ?? null);
           }}
@@ -22,9 +34,6 @@ export default function SubCategorySelect({ subCategories, value, onChange }) {
           ))}
         </select>
       </div>
-
-      {/* Dropdown */}
-      {/* <select className="border p-2 rounded" value={}></select> */}
     </div>
   );
 }

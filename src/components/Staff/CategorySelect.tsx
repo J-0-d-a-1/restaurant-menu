@@ -1,4 +1,16 @@
-export default function CategorySelect({ categories, value, onChange }) {
+import type { Category } from "../../types";
+
+interface CategorySelectProps {
+  categories: Category[];
+  value: Category | null;
+  onChange: (category: Category | undefined) => void;
+}
+
+export default function CategorySelect({
+  categories,
+  value,
+  onChange,
+}: CategorySelectProps) {
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
@@ -6,9 +18,9 @@ export default function CategorySelect({ categories, value, onChange }) {
         <select
           className="w-full border rounded p-2"
           value={value?.id ?? ""}
-          onChange={(e) => {
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
             const selected = categories.find(
-              (category) => category.id === e.target.value
+              (category) => category.id === e.target.value,
             );
             onChange(selected);
           }}

@@ -1,6 +1,15 @@
 import { useEffect } from "react";
+import { ImagePreview } from "../../types";
 
-export default function ImageUploadPreview({ images, setImages }) {
+interface ImageUploadPreviewProps {
+  images: ImagePreview[];
+  setImages: React.Dispatch<React.SetStateAction<ImagePreview[]>>;
+}
+
+export default function ImageUploadPreview({
+  images,
+  setImages,
+}: ImageUploadPreviewProps) {
   // using supabase urls
   useEffect(() => {
     return () => {
@@ -13,7 +22,7 @@ export default function ImageUploadPreview({ images, setImages }) {
   }, [images]);
 
   // Add an image URL
-  const handleAddImage = (e) => {
+  const handleAddImage = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -23,7 +32,7 @@ export default function ImageUploadPreview({ images, setImages }) {
   };
 
   // Remove image by index
-  const handleRemoveImages = (index) => {
+  const handleRemoveImages = (index: number): void => {
     setImages(images.filter((_, i) => i !== index));
   };
 
@@ -44,7 +53,7 @@ export default function ImageUploadPreview({ images, setImages }) {
         </label>
 
         {/* Thumbnails */}
-        {images.map((img, index) => (
+        {images.map((img: ImagePreview, index: number) => (
           <div key={index} className="relative w-24 h-24">
             <img
               src={img.preview}

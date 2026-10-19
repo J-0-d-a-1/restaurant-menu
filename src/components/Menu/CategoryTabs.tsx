@@ -1,4 +1,16 @@
-export default function CategoryTabs({ categories, selected, onSelect }) {
+import type { Category } from "../../types";
+
+interface CategoryTabsProps {
+  categories: Category[];
+  selected: Category | null;
+  onSelect: (category: Category) => void;
+}
+
+export default function CategoryTabs({
+  categories,
+  selected,
+  onSelect,
+}: CategoryTabsProps) {
   return (
     <div className="flex gap-2 overflow-x-auto py-2 mb-2 text-center border-t border-b sm:justify-center">
       {categories.map((category) => {

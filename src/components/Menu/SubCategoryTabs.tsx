@@ -1,4 +1,16 @@
-export default function SubCategoryTabs({ subCategories, selected, onSelect }) {
+import { SubCategory } from "../../types";
+
+interface SubCategoryTabsProps {
+  subCategories: SubCategory[];
+  selected: SubCategory | null;
+  onSelect: (subCategory: SubCategory | null) => void;
+}
+
+export default function SubCategoryTabs({
+  subCategories,
+  selected,
+  onSelect,
+}: SubCategoryTabsProps) {
   return (
     <div className="flex gap-2 overflow-x-auto pb-2 mb-5 text-center border-b justify-center">
       {/* All tab */}

@@ -1,6 +1,11 @@
 import SoldOutBadge from "./SoldOutBadge";
+import type { MenuItem } from "../../types";
 
-export default function MenuItemCard({ item }) {
+interface MenuItemCardProps {
+  item: MenuItem;
+}
+
+export default function MenuItemCard({ item }: MenuItemCardProps) {
   return (
     <div
       key={item.name}
@@ -8,7 +13,7 @@ export default function MenuItemCard({ item }) {
     >
       {item.soldOut && <SoldOutBadge />}
       <img
-        src={item.images[0]}
+        src={item.images?.[0] ?? ""}
         alt={item.name}
         className="w-full h-40 object-cover rounded-md mb-3"
       />

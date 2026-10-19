@@ -31,7 +31,7 @@ export default function StaffPage() {
       {/* Add new item button */}
       <button
         className="mb-4 bg-blue-600 text-white px-4 py-2 rounded-lg"
-        onClick={() => dispatch({ type: "SET_EDITING_ITEM", item: {} })}
+        onClick={() => dispatch({ type: "SET_EDITING_ITEM", item: null })}
       >
         + Add New Menu
       </button>
