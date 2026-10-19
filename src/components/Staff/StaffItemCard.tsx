@@ -50,13 +50,6 @@ export default function StaffItemCard({
         className="w-full h-40 object-cover rounded-md mb-3"
       />
       <h2 className="font-bold text-lg">{item.name}</h2>
-      {/* TODO: Currently showing categoryId/subCategoryId instead of names.
-          Need to resolve names via Category/SubCategory look up before passing to this component. */}
-      <p className="text-sm text-gray-600">{item.categoryId}</p>
-
-      {item.subCategoryId && (
-        <p className="text-xs text-gray-500">{item.subCategoryId}</p>
-      )}
 
       <p className="mt-2 font-semibold">${item.price}</p>
 

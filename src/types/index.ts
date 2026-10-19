@@ -2,7 +2,7 @@
 export interface MenuItemDB {
   id: string;
   name: string;
-  category_id: string;
+  category_id: string | null;
   subcategory_id: string | null;
   description: string | null;
   price: number;
